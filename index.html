@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- saved from url=(0048)file:///C:/Users/user/Downloads/index%20(4).html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Holiday Ops</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="./index_files/pdf.min.js.다운로드" defer=""></script>
+<script src="./index_files/xlsx.full.min.js.다운로드" defer=""></script>
+<script src="./index_files/firebase-app-compat.js.다운로드"></script>
+<script src="./index_files/firebase-firestore-compat.js.다운로드"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#fff7f4;color:#1a1a1a;min-height:100vh;}
@@ -266,6 +266,17 @@ input[type="file"]{display:none;}
 .add-tax-btn{font-size:12px;padding:7px;border:1px dashed #cbd5e1;border-radius:8px;background:transparent;color:#64748b;cursor:pointer;width:100%;text-align:center;}
 .add-tax-btn:hover{background:#f8fafc;}
 
+.doc-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:9px;background:#f8fafc;margin-bottom:8px;}
+.doc-item:hover{background:#fff7f4;border-color:#ffb89a;}
+.doc-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center;}
+.doc-info{flex:1;min-width:0;}
+.doc-name{font-size:13px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.doc-meta{font-size:11px;color:#94a3b8;margin-top:2px;}
+.doc-actions{display:flex;gap:6px;flex-shrink:0;}
+.doc-dl-btn{font-size:11px;padding:4px 10px;border:1px solid #ffb89a;border-radius:6px;background:#fff7f4;color:#FF671D;cursor:pointer;font-weight:600;text-decoration:none;}
+.doc-dl-btn:hover{background:#ffe0d4;}
+.doc-del-btn{font-size:11px;padding:4px 10px;border:1px solid #fecaca;border-radius:6px;background:#FCEBEB;color:#A32D2D;cursor:pointer;}
+
 /* BRAND INFO */
 .brand-info-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;}
 .binfo-link{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border-radius:6px;background:#fff7f4;color:#FF671D;border:1px solid #ffb89a;text-decoration:none;cursor:pointer;white-space:nowrap;}
@@ -362,8 +373,8 @@ input[type="file"]{display:none;}
 
 <!-- DEBUG BAR -->
 <div class="debug-bar" id="debug-bar">
-  <div class="debug-dot"></div>
-  <span id="debug-msg">Holiday Ops v1.0 — 로컬 저장소 연결됨</span>
+  <div class="debug-dot" style="background: rgb(34, 197, 94);"></div>
+  <span id="debug-msg">저장 완료 (동기화됨) — 오후 3:17:10</span>
   <span style="margin-left:auto;cursor:pointer;color:#64748b;" onclick="clearStorage()">초기화</span>
 </div>
 
@@ -375,14 +386,14 @@ input[type="file"]{display:none;}
   </div>
   <div class="header-right">
     <div class="launch-block" onclick="openLaunchModal()" title="클릭해서 설정">
-      <div class="launch-val" id="launch-val">D-??</div>
+      <div class="launch-val" id="launch-val">D-30</div>
       <div class="launch-label">런칭까지 ✎</div>
     </div>
     <div class="goal-block" onclick="openLaunchModal()" title="클릭해서 목표 수정">
       <div class="goal-label">브랜드 목표</div>
-      <div class="goal-val" id="goal-val">— / 30</div>
-      <div class="goal-bar-bg" style="margin-top:6px;"><div class="goal-bar-fill" id="goal-bar-fill"></div></div>
-      <div class="goal-completion-label" id="goal-completion-label"></div>
+      <div class="goal-val" id="goal-val">3 / 30</div>
+      <div class="goal-bar-bg" style="margin-top:6px;"><div class="goal-bar-fill" id="goal-bar-fill" style="width: 10%;"></div></div>
+      <div class="goal-completion-label" id="goal-completion-label">결제 완료  10%</div>
     </div>
   </div>
 </div>
@@ -392,24 +403,476 @@ input[type="file"]{display:none;}
 
   <!-- MAIN TABS -->
   <div class="main-tabs">
-    <div class="main-tab active" onclick="switchMainTab('brands')">브랜드 관리</div>
-    <div class="main-tab" onclick="switchMainTab('inventory')">상품 · SKU · 재고</div>
+    <div class="main-tab active" onclick="switchMainTab(&#39;brands&#39;)">브랜드 관리</div>
+    <div class="main-tab" onclick="switchMainTab(&#39;inventory&#39;)">상품 · SKU · 재고</div>
   </div>
 
   <!-- VIEW: 브랜드 관리 -->
   <div class="main-view active" id="main-brands">
-    <div class="summary" id="summary"></div>
-    <div class="notice-section" id="notice-section"></div>
+    <div class="summary" id="summary">
+    <div class="stat"><div class="stat-label">전체 브랜드</div><div class="stat-val">9</div></div>
+    <div class="stat"><div class="stat-label">결제 완료</div><div class="stat-val">3 / 9</div></div>
+    <div class="stat"><div class="stat-label">물품 수령</div><div class="stat-val">1 / 9</div></div>
+    <div class="stat"><div class="stat-label">평균 진행률</div><div class="stat-val">63%</div></div>
+  </div>
+    <div class="notice-section" id="notice-section">
+    <div class="notice-banner" style="margin-bottom:8px;">
+      <div class="notice-icon"><div class="notice-dot-red"></div></div>
+      <div class="notice-body">
+        <div class="notice-title">sorekara 시계 결제 4/14 예정</div>
+        <div class="notice-items">
+          <div class="notice-item"><strong>Sorekara</strong> — 독점계약서 서명 필요 <span style="color:#94a3b8;font-weight:400;">/ 전자서명 또는 자필서명 후 스캔 제출</span></div><div class="notice-item"><strong>Sorekara</strong> — 대금 결제  <span style="color:#94a3b8;font-weight:400;">/ 소레카라 물품 대금 미납부 — bank details (invoice 버튼)</span></div>
+        </div>
+        <div class="notice-meta">2026. 4. 13. 등록</div>
+      </div>
+      <button class="notice-close" onclick="dismissNotice(&#39;atzqfr9&#39;)">닫기</button>
+    </div>
+  
+    <div class="notice-banner" style="margin-bottom:8px;">
+      <div class="notice-icon"><div class="notice-dot-red"></div></div>
+      <div class="notice-body">
+        <div class="notice-title">견적서요청 완료 도매가 가격 139-&gt;69euro </div>
+        <div class="notice-items">
+          <div class="notice-item"><strong>Zigzagzurich</strong> — 1차 결제 <span style="color:#94a3b8;font-weight:400;">/ 미결제</span></div>
+        </div>
+        <div class="notice-meta">2026. 4. 13. 등록</div>
+      </div>
+      <button class="notice-close" onclick="dismissNotice(&#39;mxe9iqx&#39;)">닫기</button>
+    </div>
+  
+    <div class="notice-banner" style="margin-bottom:8px;">
+      <div class="notice-icon"><div class="notice-dot-red"></div></div>
+      <div class="notice-body">
+        <div class="notice-title">decorwalther / kyowa / 견적서 받음.</div>
+        <div class="notice-items">
+          <div class="notice-item"><strong>DECOR WALTER</strong> — 1차 결제 <span style="color:#94a3b8;font-weight:400;">/ 미결제</span></div><div class="notice-item"><strong>KYOWA</strong> — 1차 결제 <span style="color:#94a3b8;font-weight:400;">/ 미결제</span></div>
+        </div>
+        <div class="notice-meta">2026. 4. 13. 등록</div>
+      </div>
+      <button class="notice-close" onclick="dismissNotice(&#39;6nt8wfe&#39;)">닫기</button>
+    </div>
+  
+    <div class="notice-banner" style="margin-bottom:8px;">
+      <div class="notice-icon"><div class="notice-dot-red"></div></div>
+      <div class="notice-body">
+        <div class="notice-title">부가세 결제 마감 4/24전까지! ( fedex 배송비 견적 아직 도착x)</div>
+        <div class="notice-items">
+          <div class="notice-item"><strong>Astic Brille</strong> — 납세: 부가세 10%, FTA 적용됨 <span style="color:#94a3b8;font-weight:400;">/ 124,320</span></div>
+        </div>
+        <div class="notice-meta">2026. 4. 13. 등록</div>
+      </div>
+      <button class="notice-close" onclick="dismissNotice(&#39;lqa7hyh&#39;)">닫기</button>
+    </div>
+  </div>
     <div class="toolbar">
-      <input type="text" id="search-input" placeholder="브랜드 검색..." oninput="render()"/>
+      <input type="text" id="search-input" placeholder="브랜드 검색..." oninput="render()">
       <button class="notice-reg-btn" onclick="openNoticeModal()">공지 등록</button>
       <button class="export-btn" onclick="openCalcModal()">환율 계산기</button>
       <button class="export-btn" onclick="exportJSON()">JSON 내보내기</button>
       <button class="export-btn" onclick="importJSON()">JSON 불러오기</button>
-      <input type="file" id="import-file" accept=".json" onchange="handleImport(event)"/>
+      <input type="file" id="import-file" accept=".json" onchange="handleImport(event)">
       <button class="add-brand-btn" onclick="openAddBrand()">+ 브랜드 추가</button>
     </div>
-    <div class="grid" id="cards"></div>
+    <div class="grid" id="cards"><div class="brand-card">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#FF671D;flex-shrink:0;">⏰</div>
+          <span class="bn">Sorekara</span>
+        </div>
+        <span class="badge b-unpaid">미결제</span>
+      </div>
+      <div class="brand-info-row"><span class="brand-country-tag">홈리빙(시계)</span></div>
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">283552</span>
+          <span class="pay-krw">₩2,651,211</span>
+        </div>
+        <span class="pay-meta">04/14 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 불가</span>
+        <span class="tag">관세: 있음</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        EMS · 직배송
+      </div>
+      <div class="pending-pill"><div class="pending-dot"></div>블로킹 2건</div>
+      <div><span class="arrival-tag">04/21 도착예정</span></div>
+      <div class="invoice-preview">인보이스: COMMERCIAL INVOICE.pdf</div>
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-ok">결제가능</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:86%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">86%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="viewInvoice(3)" title="인보이스 보기">📄 Invoice</button>
+        
+        <button class="card-btn pending-btn" onclick="openPendingPanel(3)">Pending</button>
+      </div>
+    </div><div class="brand-card">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#FF671D;flex-shrink:0;">🛁</div>
+          <span class="bn">Zigzagzurich</span>
+        </div>
+        <span class="badge b-unpaid">미결제</span>
+      </div>
+      <div class="brand-info-row"><span class="brand-country-tag">업체-스위스/이탈리아제작</span><span class="brand-country-tag">샤워커튼</span><a class="binfo-link" href="mailto:adam.comiskey@4spaces.ch" onclick="event.stopPropagation()">✉ Adam Comiskey</a></div>
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      
+      
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-ok">결제가능</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:40%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">40%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(4)" title="인보이스 업로드">↑ Invoice</button>
+        
+        
+      </div>
+    </div><div class="brand-card">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#FF671D;flex-shrink:0;">🧺</div>
+          <span class="bn">DECOR WALTER</span>
+        </div>
+        <span class="badge b-unpaid">미결제</span>
+      </div>
+      <div class="brand-info-row"><span class="brand-country-tag">🇩🇪 Germany</span><span class="brand-country-tag">인테리어 소품등.</span><a class="binfo-link" href="file:///C:/Users/user/Downloads/WWW.DECOR-WALTHER.DE" target="_blank" onclick="event.stopPropagation()">🌐 Web</a><a class="binfo-link" href="https://www.instagram.com/decorwalther" target="_blank" onclick="event.stopPropagation()">📸 Instagram</a><a class="binfo-link" href="mailto:virpi.linna-torbica@decor-walther.de" onclick="event.stopPropagation()">✉ Virpi Linna-Torbica</a></div>
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      
+      
+      <div class="invoice-preview">인보이스: WEEKENDS Inc_AN126100998_10_04_2026.pdf</div>
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-ok">결제가능</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:40%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">40%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="viewInvoice(5)" title="인보이스 보기">📄 Invoice</button>
+        
+        
+      </div>
+    </div><div class="brand-card">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#FF671D;flex-shrink:0;">🏠</div>
+          <span class="bn">Alessandra</span>
+        </div>
+        <span class="badge b-unpaid">미결제</span>
+      </div>
+      <div class="brand-info-row"><span class="brand-country-tag">Milano, Italia</span><span class="brand-country-tag">접시,컵,식기류</span><a class="binfo-link" href="https://www.alessandrabaldereschi.com/" target="_blank" onclick="event.stopPropagation()">🌐 Web</a><a class="binfo-link" href="mailto:info@alessandrabaldereschi.com" onclick="event.stopPropagation()">✉ Alessandrabaldereschi</a></div>
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      
+      
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-inv">인보이스대기</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:20%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">20%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(6)" title="인보이스 업로드">↑ Invoice</button>
+        
+        
+      </div>
+    </div><div class="brand-card">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#FF671D;flex-shrink:0;">M</div>
+          <span class="bn">mark+fold</span>
+        </div>
+        <span class="badge b-unpaid">미결제</span>
+      </div>
+      <div class="brand-info-row"><span class="brand-country-tag">고급 필기류</span><a class="binfo-link" href="file:///C:/Users/user/Downloads/www.markandfold.com" target="_blank" onclick="event.stopPropagation()">🌐 Web</a><a class="binfo-link" href="mailto:studio@markandfold.com" onclick="event.stopPropagation()">✉ Helen</a></div>
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="pending-pill"><div class="pending-dot"></div>블로킹 1건</div>
+      
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-ok">결제가능</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:30%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">30%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(7)" title="인보이스 업로드">↑ Invoice</button>
+        
+        <button class="card-btn pending-btn" onclick="openPendingPanel(7)">Pending</button>
+      </div>
+    </div><div class="brand-card">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#FF671D;flex-shrink:0;">K</div>
+          <span class="bn">KYOWA</span>
+        </div>
+        <span class="badge b-unpaid">미결제</span>
+      </div>
+      <div class="brand-info-row"><span class="brand-country-tag">일본</span><span class="brand-country-tag">실리콘 밴드, 타바네 밴드 </span><a class="binfo-link" href="mailto:k-yasuzuka@kyowa-ltd.co.jp" onclick="event.stopPropagation()">✉ Erika KISHIMOTO (Ms)</a></div>
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 불가</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      
+      
+      <div class="invoice-preview">인보이스: Quotation KW-26-4-23.pdf</div>
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-ok">결제가능</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:55%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">55%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="viewInvoice(8)" title="인보이스 보기">📄 Invoice</button>
+        
+        
+      </div>
+    </div><div class="brand-card alldone">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#FF671D;flex-shrink:0;">💇 </div>
+          <span class="bn">CLINQ</span>
+        </div>
+        <span class="badge b-paid">결제 완료</span>
+      </div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row paid-row">
+        <div class="pay-left"><div class="pay-dot dot-paid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">€3,160</span>
+          <span class="pay-krw">₩5,501,560</span>
+        </div>
+        <span class="pay-meta">04/07 · 완료</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 가능</span>
+        <span class="tag">관세: 0 예상</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk on"><div class="chkbox on"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        DHL · 직배송
+      </div>
+      
+      <div><span class="arrival-tag">05/13 도착예정</span></div>
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-wait">배송대기</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:100%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">100%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(0)" title="인보이스 업로드">↑ Invoice</button>
+        
+        
+      </div>
+    </div><div class="brand-card alldone">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#FF671D;flex-shrink:0;">L</div>
+          <span class="bn">Lorenzi</span>
+        </div>
+        <span class="badge b-paid">결제 완료</span>
+      </div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row paid-row">
+        <div class="pay-left"><div class="pay-dot dot-paid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">€3,135</span>
+          <span class="pay-krw">₩5,470,575</span>
+        </div>
+        <span class="pay-meta">04/07 · 완료</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확보</span>
+        <span class="tag">관세: 있음</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk on"><div class="chkbox on"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        DHL · 직배송
+      </div>
+      
+      <div><span class="arrival-tag">04/28 도착예정 · 주문제작2주소요, DHL</span></div>
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-done">완료</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:100%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">100%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(1)" title="인보이스 업로드">↑ Invoice</button>
+        
+        
+      </div>
+    </div><div class="brand-card alldone">
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#FF671D;flex-shrink:0;">✨</div>
+          <span class="bn">Astic Brille</span>
+        </div>
+        <span class="badge b-paid">결제 완료</span>
+      </div>
+      <div class="brand-info-row"><span class="brand-country-tag">프랑스</span><span class="brand-country-tag">고급 광택 천 </span></div>
+      <div class="pay-timeline">
+      <div class="pay-row paid-row">
+        <div class="pay-left"><div class="pay-dot dot-paid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">€656.9</span>
+          <span class="pay-krw">₩1,143,663</span>
+        </div>
+        <span class="pay-meta">04/07 · 완료</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확보</span>
+        <span class="tag">관세: 0</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk on"><div class="chkbox on"></div>결제</div><div class="chk on"><div class="chkbox on"></div>통관</div><div class="chk on"><div class="chkbox on"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        FedEx · 원격픽업 · 수령 완료
+      </div>
+      
+      <div><span class="arrival-tag arrived">04/09 도착완료 · FedEx 원격픽업 수령 완료</span></div>
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-done">완료</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:100%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">100%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(2)" title="인보이스 업로드">↑ Invoice</button>
+        
+        
+      </div>
+    </div></div>
 
   <!-- PENDING PANEL -->
   <div class="panel" id="pending-panel">
@@ -423,8 +886,8 @@ input[type="file"]{display:none;}
     <div class="sec">서명 방식 선택</div>
     <div style="font-size:13px;color:#64748b;margin-bottom:8px;">독점계약서 서명 방법을 선택하세요</div>
     <div class="sign-options">
-      <div class="sign-opt" id="sign-electronic" onclick="selectSign('electronic')">전자서명</div>
-      <div class="sign-opt" id="sign-manual" onclick="selectSign('manual')">자필서명 후 스캔</div>
+      <div class="sign-opt" id="sign-electronic" onclick="selectSign(&#39;electronic&#39;)">전자서명</div>
+      <div class="sign-opt" id="sign-manual" onclick="selectSign(&#39;manual&#39;)">자필서명 후 스캔</div>
     </div>
     <div class="sign-detail" id="sign-detail"></div>
     <div class="divider"></div>
@@ -439,25 +902,26 @@ input[type="file"]{display:none;}
   <!-- EDITOR PANEL -->
   <div class="panel" id="editor">
     <div class="panel-header">
-      <div class="panel-title" id="ed-title">브랜드 편집</div>
+      <div class="panel-title" id="ed-title">Astic Brille</div>
       <button class="close-btn" onclick="closeEditor()">닫기</button>
     </div>
 
     <div class="editor-tabs">
-      <div class="etab active" onclick="switchETab('info')">브랜드 정보</div>
-      <div class="etab" onclick="switchETab('payment')">결제</div>
-      <div class="etab" onclick="switchETab('delivery')">배송</div>
-      <div class="etab" onclick="switchETab('invoice')">인보이스</div>
-      <div class="etab" onclick="switchETab('tax')">납세/배송일정</div>
-      <div class="etab" onclick="switchETab('pending')">Pending</div>
+      <div class="etab active" onclick="switchETab(&#39;info&#39;)">브랜드 정보</div>
+      <div class="etab" onclick="switchETab(&#39;payment&#39;)">결제</div>
+      <div class="etab" onclick="switchETab(&#39;delivery&#39;)">배송</div>
+      <div class="etab" onclick="switchETab(&#39;invoice&#39;)">인보이스</div>
+      <div class="etab" onclick="switchETab(&#39;docs&#39;)">서류 첨부</div>
+      <div class="etab" onclick="switchETab(&#39;tax&#39;)">납세/배송일정</div>
+      <div class="etab" onclick="switchETab(&#39;pending&#39;)">Pending</div>
     </div>
 
     <!-- TAB: 브랜드 정보 -->
     <div class="etab-section active" id="etab-info">
       <div class="sec">기본</div>
       <div class="fg">
-        <div class="f"><label>브랜드명</label><input id="e-name" type="text"/></div>
-        <div class="f"><label>국가 / 원산지</label><input id="e-country" type="text" placeholder="예: 프랑스, 독일, 일본"/></div>
+        <div class="f"><label>브랜드명</label><input id="e-name" type="text"></div>
+        <div class="f"><label>국가 / 원산지</label><input id="e-country" type="text" placeholder="예: 프랑스, 독일, 일본"></div>
       </div>
       <div class="fg">
         <div class="f"><label>진행 상태</label>
@@ -469,40 +933,69 @@ input[type="file"]{display:none;}
           </select>
         </div>
         <div class="f"><label>진행률</label>
-          <div class="pf"><input type="range" id="e-progress" min="0" max="100" step="1"/><span id="e-prog-out">0%</span></div>
+          <div class="pf"><input type="range" id="e-progress" min="0" max="100" step="1"><span id="e-prog-out">100%</span></div>
         </div>
       </div>
       <div class="fg">
         <div class="f"><label>FTA</label>
           <select id="e-fta"><option value="가능">가능</option><option value="확인중">확인중</option><option value="확보">확보</option><option value="불가">불가</option></select>
         </div>
-        <div class="f"><label>관세</label><input id="e-duty" type="text"/></div>
+        <div class="f"><label>관세</label><input id="e-duty" type="text"></div>
       </div>
       <div class="fg">
         <div class="f"><label>VAT</label>
           <select id="e-vat"><option value="있음">있음</option><option value="없음">없음</option></select>
         </div>
-        <div class="f"><label>카테고리</label><input id="e-category" type="text" placeholder="예: 안경, 의류, 액세서리"/></div>
+        <div class="f"><label>카테고리</label><input id="e-category" type="text" placeholder="예: 안경, 의류, 액세서리"></div>
       </div>
+
+      <div class="sec">브랜드 표식</div>
+      <div class="f">
+        <label>이모지 / 표식</label>
+        <input id="e-logo-url" type="text" placeholder="예: 🕯 🧴 👓" maxlength="4" style="font-size:24px;width:80px;text-align:center;">
+      </div>
+      <div style="margin-top:10px;" id="emoji-picker">
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:5px;font-weight:600;">상품 카테고리</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
+          ${['🕒','⏰','🕰️','👓','🕶','🧴','🧼','🚿','🛁','🕯','🔥','🌿','🧵','🧺','🪶','🪑','🧿','💍','📿','✨','👜','👝','🎒','🪞','📚','✏️','🖊','💻','📱','🔌'].map(e=&gt;
+            `<button type="button" onclick="document.getElementById(&#39;e-logo-url&#39;).value=&#39;${e}&#39;;updateCardEmoji()" style="font-size:20px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;cursor:pointer;line-height:1;" title="${e}">${e}</button>`
+          ).join('')}
+        </div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:5px;font-weight:600;">운영 / 대시보드</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">
+          ${['📦','📊','📥','📤','💰','📈','🛒','📋','🏷','🗂','🚚','💸','🔖'].map(e=&gt;
+            `<button type="button" onclick="document.getElementById(&#39;e-logo-url&#39;).value=&#39;${e}&#39;;updateCardEmoji()" style="font-size:20px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;cursor:pointer;line-height:1;" title="${e}">${e}</button>`
+          ).join('')}
+        </div>
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:5px;font-weight:600;">국가</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;">
+          ${['🇫🇷','🇩🇪','🇯🇵','🇮🇹','🇬🇧','🇨🇭','🇸🇪','🇦🇺','🇺🇸','🇰🇷','🇳🇱','🇩🇰','🇧🇪','🇵🇹','🇪🇸'].map(e=&gt;
+            `<button type="button" onclick="document.getElementById(&#39;e-logo-url&#39;).value=&#39;${e}&#39;;updateCardEmoji()" style="font-size:20px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;cursor:pointer;line-height:1;" title="${e}">${e}</button>`
+          ).join('')}
+        </div>
+      </div>
+      <div id="logo-preview" style="margin-top:10px;"><div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#fff7f4;border:1px solid #ffb89a;border-radius:9px;font-size:13px;color:#FF671D;">
+    <span style="font-size:28px;">✨</span> 카드에 이렇게 표시됩니다
+  </div></div>
 
       <div class="sec">연락처 / 담당자</div>
       <div class="fg">
-        <div class="f"><label>담당자명</label><input id="e-contact-name" type="text" placeholder="홍길동"/></div>
-        <div class="f"><label>이메일</label><input id="e-contact-email" type="email" placeholder="contact@brand.com"/></div>
+        <div class="f"><label>담당자명</label><input id="e-contact-name" type="text" placeholder="홍길동"></div>
+        <div class="f"><label>이메일</label><input id="e-contact-email" type="email" placeholder="contact@brand.com"></div>
       </div>
       <div class="fg">
-        <div class="f"><label>전화 / WhatsApp</label><input id="e-contact-phone" type="text" placeholder="+33 6 00 00 00 00"/></div>
-        <div class="f"><label>언어</label><input id="e-contact-lang" type="text" placeholder="예: 프랑스어, 영어"/></div>
+        <div class="f"><label>전화 / WhatsApp</label><input id="e-contact-phone" type="text" placeholder="+33 6 00 00 00 00"></div>
+        <div class="f"><label>언어</label><input id="e-contact-lang" type="text" placeholder="예: 프랑스어, 영어"></div>
       </div>
 
       <div class="sec">링크</div>
       <div class="fg">
-        <div class="f"><label>공식 웹사이트</label><input id="e-link-web" type="url" placeholder="https://brand.com"/></div>
-        <div class="f"><label>인스타그램</label><input id="e-link-insta" type="text" placeholder="@brandname 또는 URL"/></div>
+        <div class="f"><label>공식 웹사이트</label><input id="e-link-web" type="url" placeholder="https://brand.com"></div>
+        <div class="f"><label>인스타그램</label><input id="e-link-insta" type="text" placeholder="@brandname 또는 URL"></div>
       </div>
       <div class="fg">
-        <div class="f"><label>링크트리 / 기타</label><input id="e-link-other" type="url" placeholder="https://linktr.ee/..."/></div>
-        <div class="f"><label>카탈로그 / 룩북 URL</label><input id="e-link-catalog" type="url" placeholder="https://..."/></div>
+        <div class="f"><label>링크트리 / 기타</label><input id="e-link-other" type="url" placeholder="https://linktr.ee/..."></div>
+        <div class="f"><label>카탈로그 / 룩북 URL</label><input id="e-link-catalog" type="url" placeholder="https://..."></div>
       </div>
 
       <div class="sec">메모</div>
@@ -510,16 +1003,56 @@ input[type="file"]{display:none;}
 
       <div class="sec">완료 체크</div>
       <div class="chk-ed">
-        <label><input type="checkbox" id="e-paid-done"/> 결제 완료 (전체)</label>
-        <label><input type="checkbox" id="e-customs-done"/> 통관 완료</label>
-        <label><input type="checkbox" id="e-shipped-done"/> 발송 완료</label>
+        <label><input type="checkbox" id="e-paid-done"> 결제 완료 (전체)</label>
+        <label><input type="checkbox" id="e-customs-done"> 통관 완료</label>
+        <label><input type="checkbox" id="e-shipped-done"> 발송 완료</label>
       </div>
     </div>
 
     <!-- TAB: 결제 -->
     <div class="etab-section" id="etab-payment">
       <div class="sec">결제 내역</div>
-      <div class="pay-editor-list" id="pay-editor-list"></div>
+      <div class="pay-editor-list" id="pay-editor-list"><div class="pay-ed-row">
+      <div class="pay-ed-row-header">
+        <input class="pay-ed-label-input" type="text" value="1차 결제" onchange="editPayments[0].label=this.value">
+        <button class="del-pay-btn" onclick="removePayment(0)">삭제</button>
+      </div>
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr 120px;gap:8px;">
+        <div class="f">
+          <label>통화</label>
+          <select id="pay-cur-0" onchange="editPayments[0].currency=this.value;autoFillPayRate(0);updateKrwPreview(0)" style="font-size:12px;padding:5px 6px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;">
+            <option value="EUR" selected="">EUR € 유로</option><option value="USD">USD $ 미국 달러</option><option value="JPY">JPY ¥ 일본 엔</option><option value="GBP">GBP £ 영국 파운드</option><option value="CHF">CHF Fr 스위스 프랑</option><option value="CNY">CNY ¥ 중국 위안</option><option value="SEK">SEK kr 스웨덴 크로나</option><option value="DKK">DKK kr 덴마크 크로네</option><option value="AUD">AUD A$ 호주 달러</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>금액 (€)</label>
+          <input type="text" value="€656.9" placeholder="€0" oninput="editPayments[0].amount=this.value;syncPayPreview();updateKrwPreview(0)">
+        </div>
+        <div class="f">
+          <label>날짜</label>
+          <input type="date" value="2025-04-07" oninput="editPayments[0].date=this.value;syncPayPreview()">
+        </div>
+        <div class="f">
+          <label>상태</label>
+          <select onchange="editPayments[0].status=this.value;syncPayPreview()">
+            <option value="unpaid">미결제</option>
+            <option value="partial">부분완료</option>
+            <option value="paid" selected="">완료</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end;">
+        <div class="f">
+          <label>1 EUR = KRW</label>
+          <input type="number" value="1741" placeholder="자동입력" id="pay-rate-0" oninput="editPayments[0].eurRate=this.value;updateKrwPreview(0)" step="0.01">
+        </div>
+        <div class="f">
+          <label>한화 환산</label>
+          <div id="krw-preview-0" style="font-size:15px;font-weight:700;color:#FF671D;padding:6px 0;">₩1,143,663</div>
+        </div>
+      </div>
+      <div class="f"><label>메모</label><input type="text" value="결제 완료" placeholder="비고..." oninput="editPayments[0].note=this.value"></div>
+    </div></div>
       <button class="add-pay-btn" onclick="addPayment()">+ 결제 차수 추가</button>
     </div>
 
@@ -527,45 +1060,63 @@ input[type="file"]{display:none;}
     <div class="etab-section" id="etab-delivery">
       <div class="sec">배송 정보</div>
       <div class="fg">
-        <div class="f"><label>배송사</label><input id="e-carrier" type="text" placeholder="FedEx, DHL, 우체국..."/></div>
-        <div class="f"><label>배송 방식</label><input id="e-delivery-method" type="text" placeholder="원격픽업, 직배송..."/></div>
+        <div class="f"><label>배송사</label><input id="e-carrier" type="text" placeholder="FedEx, DHL, 우체국..."></div>
+        <div class="f"><label>배송 방식</label><input id="e-delivery-method" type="text" placeholder="원격픽업, 직배송..."></div>
       </div>
       <div class="fg">
-        <div class="f"><label>트래킹 번호</label><input id="e-tracking" type="text"/></div>
+        <div class="f"><label>트래킹 번호</label><input id="e-tracking" type="text"></div>
         <div class="f"><label>수령 완료</label>
           <select id="e-received"><option value="no">미수령</option><option value="yes">수령 완료</option></select>
         </div>
       </div>
       <div class="sec">물품 도착 일정</div>
       <div class="fg">
-        <div class="f"><label>예정 도착일</label><input id="e-arrival" type="date"/></div>
-        <div class="f"><label>메모</label><input id="e-arrival-note" type="text" placeholder="한국 창고 도착 등..."/></div>
+        <div class="f"><label>예정 도착일</label><input id="e-arrival" type="date"></div>
+        <div class="f"><label>메모</label><input id="e-arrival-note" type="text" placeholder="한국 창고 도착 등..."></div>
       </div>
     </div>
 
     <!-- TAB: 인보이스 -->
     <div class="etab-section" id="etab-invoice">
       <div class="sec">인보이스</div>
-      <input type="file" id="invoice-upload" accept=".pdf,.jpg,.jpeg,.png" onchange="handleInvoiceUpload(event)" style="display:none"/>
-      <div id="inv-dropzone" class="inv-drop-zone"
-        onclick="document.getElementById('invoice-upload').click()"
-        ondragover="event.preventDefault();this.classList.add('dragover')"
-        ondragleave="this.classList.remove('dragover')"
-        ondrop="handleInvDrop(event)">
-        <div class="inv-drop-label">클릭하거나 파일을 여기에 드래그</div>
-        <div class="inv-drop-sub">PDF · JPG · PNG 지원</div>
-      </div>
+      <input type="file" id="invoice-upload" accept=".pdf,.jpg,.jpeg,.png" onchange="handleInvoiceUpload(event)" style="display:none">
+      <div id="inv-dropzone" class="inv-drop-zone" onclick="document.getElementById(&#39;invoice-upload&#39;).click()" ondragover="event.preventDefault();this.classList.add(&#39;dragover&#39;)" ondragleave="this.classList.remove(&#39;dragover&#39;)" ondrop="handleInvDrop(event)"><div class="inv-drop-label">클릭하거나 파일을 여기에 드래그</div><div class="inv-drop-sub">PDF · JPG · PNG 지원</div></div>
       <div id="invoice-preview-area"></div>
+    </div>
+
+    <!-- TAB: 서류 첨부 -->
+    <div class="etab-section" id="etab-docs">
+      <div class="sec">첨부 서류</div>
+      <input type="file" id="doc-upload" multiple="" accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls,.doc,.docx,.zip" onchange="handleDocUpload(event)" style="display:none">
+      <div class="inv-drop-zone" style="margin:0 0 12px 0;width:100%;" onclick="document.getElementById(&#39;doc-upload&#39;).click()" ondragover="event.preventDefault();this.classList.add(&#39;dragover&#39;)" ondragleave="this.classList.remove(&#39;dragover&#39;)" ondrop="handleDocDrop(event)">
+        <div class="inv-drop-label">클릭하거나 파일을 드래그해서 첨부</div>
+        <div class="inv-drop-sub">PDF · 이미지 · Excel · Word · ZIP 등 모든 파일 지원</div>
+      </div>
+      <div id="doc-list"></div>
     </div>
 
     <!-- TAB: 납세/배송일정 -->
     <div class="etab-section" id="etab-tax">
       <div class="detail-tabs">
-        <div class="dtab active" id="tab-tax" onclick="switchTab('tax')">납세 처리</div>
-        <div class="dtab" id="tab-ship" onclick="switchTab('ship')">배송 스케줄</div>
+        <div class="dtab active" id="tab-tax" onclick="switchTab(&#39;tax&#39;)">납세 처리</div>
+        <div class="dtab" id="tab-ship" onclick="switchTab(&#39;ship&#39;)">배송 스케줄</div>
       </div>
       <div class="detail-section active" id="ds-tax">
-        <div class="tax-row" id="tax-list"></div>
+        <div class="tax-row" id="tax-list"><div class="tax-item">
+      <div class="tax-header">
+        <span class="tax-label">부가세 10%, FTA 적용됨</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <select style="font-size:11px;padding:3px 6px;border:1px solid #e2e8f0;border-radius:6px;" onchange="editTaxItems[0].status=this.value;renderTaxList()">
+            <option value="todo" selected="">예정</option>
+            <option value="pending">진행중</option>
+            <option value="done">완료</option>
+          </select>
+          <button class="del-pay-btn" onclick="editTaxItems.splice(0,1);renderTaxList()">삭제</button>
+        </div>
+      </div>
+      <input type="text" value="부가세 10%, FTA 적용됨" placeholder="항목명" style="font-size:12px;padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;width:100%;" oninput="editTaxItems[0].label=this.value">
+      <input type="text" value="124,320" placeholder="메모 (납세 금액, 담당 세관 등)" style="font-size:12px;padding:5px 8px;border:1px solid #e2e8f0;border-radius:6px;width:100%;" oninput="editTaxItems[0].note=this.value">
+    </div></div>
         <button class="add-tax-btn" onclick="addTaxItem()">+ 납세 항목 추가</button>
       </div>
       <div class="detail-section" id="ds-ship">
@@ -594,17 +1145,17 @@ input[type="file"]{display:none;}
   <div class="main-view" id="main-inventory">
     <div style="padding:16px 0 8px;">
       <div class="inv-sys-toolbar">
-        <input type="text" id="inv-search" placeholder="검색..." oninput="renderAllInvTables()"/>
+        <input type="text" id="inv-search" placeholder="검색..." oninput="renderAllInvTables()">
         <button class="xlsx-btn" onclick="exportXlsx()">Excel 내보내기</button>
-        <button class="xlsx-import-btn" onclick="document.getElementById('xlsx-import-file').click()">Excel 불러오기</button>
-        <input type="file" id="xlsx-import-file" accept=".xlsx,.xls" style="display:none" onchange="importXlsx(event)"/>
+        <button class="xlsx-import-btn" onclick="document.getElementById(&#39;xlsx-import-file&#39;).click()">Excel 불러오기</button>
+        <input type="file" id="xlsx-import-file" accept=".xlsx,.xls" style="display:none" onchange="importXlsx(event)">
         <button class="add-brand-btn" onclick="addProductRow()">+ 상품 추가</button>
       </div>
       <div class="val-msg" id="val-msg"></div>
       <div class="inv-sub-tabs">
-        <div class="inv-stab active" onclick="switchInvTab('products')">상품</div>
-        <div class="inv-stab" onclick="switchInvTab('sku')">SKU</div>
-        <div class="inv-stab" onclick="switchInvTab('stock')">재고</div>
+        <div class="inv-stab active" onclick="switchInvTab(&#39;products&#39;)">상품</div>
+        <div class="inv-stab" onclick="switchInvTab(&#39;sku&#39;)">SKU</div>
+        <div class="inv-stab" onclick="switchInvTab(&#39;stock&#39;)">재고</div>
       </div>
 
       <!-- 상품 시트 -->
@@ -656,11 +1207,11 @@ input[type="file"]{display:none;}
     <div class="modal-title">목표 설정</div>
     <div class="f">
       <label>런칭 목표일 (D-day 기준)</label>
-      <input type="date" id="launch-target-input"/>
+      <input type="date" id="launch-target-input">
     </div>
     <div class="f">
       <label>목표 브랜드 수</label>
-      <input type="number" id="brand-goal-input" min="1" max="500" placeholder="예: 30"/>
+      <input type="number" id="brand-goal-input" min="1" max="500" placeholder="예: 30">
     </div>
     <div class="f">
       <label>브랜드 "완료" 기준</label>
@@ -685,14 +1236,14 @@ input[type="file"]{display:none;}
   <div class="modal">
     <div class="modal-title">새 브랜드 추가</div>
     <div class="fg">
-      <div class="f"><label>브랜드명 *</label><input type="text" id="new-name" placeholder="브랜드명"/></div>
-      <div class="f"><label>금액</label><input type="text" id="new-amount" placeholder="€0 / 0원"/></div>
+      <div class="f"><label>브랜드명 *</label><input type="text" id="new-name" placeholder="브랜드명"></div>
+      <div class="f"><label>금액</label><input type="text" id="new-amount" placeholder="€0 / 0원"></div>
     </div>
     <div class="fg">
       <div class="f"><label>FTA</label>
         <select id="new-fta"><option value="확인중">확인중</option><option value="가능">가능</option><option value="확보">확보</option><option value="불가">불가</option></select>
       </div>
-      <div class="f"><label>관세</label><input type="text" id="new-duty" placeholder="있음 / 0 / 0%"/></div>
+      <div class="f"><label>관세</label><input type="text" id="new-duty" placeholder="있음 / 0 / 0%"></div>
     </div>
     <div class="fg">
       <div class="f"><label>VAT</label>
@@ -723,8 +1274,8 @@ input[type="file"]{display:none;}
           <span id="inv-page-info">1 / 1</span>
           <button onclick="invChangePage(1)" style="padding:3px 8px;border:1px solid #e2e8f0;border-radius:5px;background:#fff;cursor:pointer;">›</button>
         </span>
-        <button class="inv-replace-btn" onclick="document.getElementById('inv-replace-upload').click()">파일 교체</button>
-        <input type="file" id="inv-replace-upload" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleInvReplace(event)"/>
+        <button class="inv-replace-btn" onclick="document.getElementById(&#39;inv-replace-upload&#39;).click()">파일 교체</button>
+        <input type="file" id="inv-replace-upload" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleInvReplace(event)">
         <button class="inv-close-btn" onclick="closeInvModal()">닫기</button>
       </div>
     </div>
@@ -742,7 +1293,7 @@ input[type="file"]{display:none;}
     <div class="notice-check-list" id="notice-check-list"></div>
     <div class="f" style="margin-top:8px;">
       <label style="font-size:12px;font-weight:500;color:#475569;">공지 제목 (선택)</label>
-      <input type="text" id="notice-title-input" placeholder="예: 확인해야 될 결제 건이 있습니다"/>
+      <input type="text" id="notice-title-input" placeholder="예: 확인해야 될 결제 건이 있습니다">
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeNoticeModal()">취소</button>
@@ -758,7 +1309,7 @@ input[type="file"]{display:none;}
     <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end;">
       <div class="f">
         <label>금액</label>
-        <input type="number" id="calc-amount" placeholder="0" oninput="calcConvert()" style="font-size:20px;font-weight:600;"/>
+        <input type="number" id="calc-amount" placeholder="0" oninput="calcConvert()" style="font-size:20px;font-weight:600;">
       </div>
       <div class="f" style="padding-bottom:8px;">
         <select id="calc-currency" onchange="calcAutoFillRate();calcConvert()" style="font-size:13px;padding:7px 8px;border:1px solid #e2e8f0;border-radius:8px;">
@@ -780,11 +1331,9 @@ input[type="file"]{display:none;}
     </div>
     <div class="f">
       <label>적용 환율 (직접 입력)</label>
-      <input type="number" id="calc-rate" placeholder="예: 1480" oninput="calcConvert()" step="0.01"/>
+      <input type="number" id="calc-rate" placeholder="예: 1480" oninput="calcConvert()" step="0.01">
     </div>
-    <div id="calc-rate-ref" style="font-size:12px;color:#94a3b8;line-height:1.6;padding:8px 10px;background:#f8fafc;border-radius:8px;">
-      참고 환율을 불러오는 중... (실시간 환율은 네트워크 연결 시 자동 조회)
-    </div>
+    <div id="calc-rate-ref" style="font-size:12px;color:#94a3b8;line-height:1.6;padding:8px 10px;background:#f8fafc;border-radius:8px;"><span style="color:#94a3b8;font-size:11px;">참고 환율 (캐시 기준) — EUR: ₩1,739 &nbsp;|&nbsp; USD: ₩1,486 &nbsp;|&nbsp; JPY: ₩9.35 &nbsp;|&nbsp; GBP: ₩1,996 &nbsp;|&nbsp; CHF: ₩1,880 &nbsp;|&nbsp; CNY: ₩216 &nbsp;|&nbsp; SEK: ₩159.7 &nbsp;|&nbsp; DKK: ₩232.6 &nbsp;|&nbsp; AUD: ₩1,044</span></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeCalcModal()">닫기</button>
     </div>
@@ -995,6 +1544,7 @@ function load(){
       brands.forEach(b=>{
         if(!b.taxItems)b.taxItems=[];
         if(!b.shipItems)b.shipItems=[];
+        if(!b.docs)b.docs=[];
         (b.payments||[]).forEach(p=>{
           if(!('eurRate' in p))p.eurRate='';
           if(!('currency' in p)){const d=getCurrencyFromAmount(p.amount);p.currency=d||'EUR';}
@@ -1220,7 +1770,13 @@ function render(){
       return tags.length?`<div class="brand-info-row">${tags.join('')}</div>`:'';
     })();
     div.innerHTML=`
-      <div class="bh"><span class="bn">${b.name}</span>${payBadgeHtml}</div>
+      <div class="bh">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+          <div style="width:30px;height:30px;border-radius:8px;background:#fff7f4;border:1px solid #ffb89a;display:flex;align-items:center;justify-content:center;font-size:${b.logoUrl?'18':'12'}px;font-weight:700;color:#FF671D;flex-shrink:0;">${b.logoUrl||b.name.charAt(0).toUpperCase()}</div>
+          <span class="bn">${b.name}</span>
+        </div>
+        ${payBadgeHtml}
+      </div>
       ${infoHtml}
       ${payHtml}
       <div class="meta-row">
@@ -1247,6 +1803,7 @@ function render(){
         ${b.invoiceData
           ? `<button class="card-btn inv-btn" onclick="viewInvoice(${realIdx})" title="인보이스 보기">📄 Invoice</button>`
           : `<button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(${realIdx})" title="인보이스 업로드">↑ Invoice</button>`}
+        ${(b.docs&&b.docs.length)?`<button class="card-btn" onclick="openEditor(${realIdx});setTimeout(()=>switchETab('docs'),200)" style="color:#FF671D;border-color:#ffb89a;">📎 ${b.docs.length}건</button>`:''}
         ${unresolvedCount>0?`<button class="card-btn pending-btn" onclick="openPendingPanel(${realIdx})">Pending</button>`:''}
       </div>
     `;
@@ -1449,6 +2006,8 @@ function openEditor(i){
 
   // Brand info tab
   document.getElementById('e-name').value=b.name;
+  document.getElementById('e-logo-url').value=b.logoUrl||'';
+  renderLogoPreview(b.logoUrl||'');
   document.getElementById('e-country').value=b.country||'';
   document.getElementById('e-status').value=b.status;
   document.getElementById('e-fta').value=b.fta;
@@ -1526,6 +2085,7 @@ function saveEdit(){
   brands[selectedIdx]={
     ...b,
     name:document.getElementById('e-name').value||b.name,
+    logoUrl:document.getElementById('e-logo-url').value,
     country:document.getElementById('e-country').value,
     category:document.getElementById('e-category').value,
     status:document.getElementById('e-status').value,
@@ -1934,15 +2494,98 @@ function saveNotice(){
   setDebug('공지 등록됨');
 }
 
+// ── DOCS ───────────────────────────────────────────────
+function getDocIcon(name){
+  const ext=name.split('.').pop().toLowerCase();
+  if(['pdf'].includes(ext)) return '📄';
+  if(['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼';
+  if(['xlsx','xls','csv'].includes(ext)) return '📊';
+  if(['doc','docx'].includes(ext)) return '📝';
+  if(['zip','rar','7z'].includes(ext)) return '🗜';
+  return '📎';
+}
+
+function fmtSize(bytes){
+  if(bytes<1024) return bytes+'B';
+  if(bytes<1024*1024) return (bytes/1024).toFixed(1)+'KB';
+  return (bytes/1024/1024).toFixed(1)+'MB';
+}
+
+function handleDocDrop(e){
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  [...e.dataTransfer.files].forEach(f=>processDocFile(f));
+}
+
+function handleDocUpload(e){
+  [...e.target.files].forEach(f=>processDocFile(f));
+  e.target.value='';
+}
+
+function processDocFile(file){
+  if(selectedIdx===null) return;
+  const maxMB=20;
+  if(file.size>maxMB*1024*1024){alert(file.name+': 최대 '+maxMB+'MB까지 첨부 가능합니다.');return;}
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    if(!brands[selectedIdx].docs) brands[selectedIdx].docs=[];
+    brands[selectedIdx].docs.push({
+      id:uid(),
+      name:file.name,
+      size:file.size,
+      type:file.type,
+      data:ev.target.result,
+      uploadedAt:new Date().toISOString()
+    });
+    save();
+    renderDocList();
+    setDebug(file.name+' 첨부 완료');
+  };
+  reader.readAsDataURL(file);
+}
+
+function renderDocList(){
+  if(selectedIdx===null) return;
+  const el=document.getElementById('doc-list');
+  if(!el) return;
+  const docs=brands[selectedIdx].docs||[];
+  if(!docs.length){
+    el.innerHTML='<div style="font-size:13px;color:#94a3b8;padding:12px 0;text-align:center;">첨부된 서류가 없습니다.</div>';
+    return;
+  }
+  el.innerHTML=docs.map((d,i)=>`
+    <div class="doc-item">
+      <div class="doc-icon">${getDocIcon(d.name)}</div>
+      <div class="doc-info">
+        <div class="doc-name" title="${d.name}">${d.name}</div>
+        <div class="doc-meta">${fmtSize(d.size)} · ${new Date(d.uploadedAt).toLocaleDateString('ko-KR')}</div>
+      </div>
+      <div class="doc-actions">
+        <a class="doc-dl-btn" href="${d.data}" download="${d.name}">다운로드</a>
+        <button class="doc-del-btn" onclick="deleteDoc(${i})">삭제</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteDoc(i){
+  if(selectedIdx===null) return;
+  if(!confirm('이 서류를 삭제할까요?')) return;
+  brands[selectedIdx].docs.splice(i,1);
+  save();
+  renderDocList();
+}
+
 // ── EDITOR TABS ────────────────────────────────────────
 function switchETab(tab){
-  const tabs=['info','payment','delivery','invoice','tax','pending'];
+  const tabs=['info','payment','delivery','invoice','docs','tax','pending'];
   tabs.forEach(t=>{
     const sec=document.getElementById('etab-'+t);
     const btn=document.querySelector(`.etab[onclick="switchETab('${t}')"]`);
     if(sec) sec.classList.toggle('active',t===tab);
     if(btn) btn.classList.toggle('active',t===tab);
   });
+  if(tab==='docs') renderDocList();
 }
 
 // ── TAB SWITCH ─────────────────────────────────────────
@@ -2370,9 +3013,26 @@ function importXlsx(e){
   e.target.value='';
 }
 
+function renderLogoPreview(val){
+  const el=document.getElementById('logo-preview');
+  if(!el||!val) return;
+  el.innerHTML=`<div style="display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:#fff7f4;border:1px solid #ffb89a;border-radius:9px;font-size:13px;color:#FF671D;">
+    <span style="font-size:28px;">${val}</span> 카드에 이렇게 표시됩니다
+  </div>`;
+}
+
+function updateCardEmoji(){
+  const val=document.getElementById('e-logo-url').value;
+  renderLogoPreview(val);
+}
+
 // ── INIT ───────────────────────────────────────────────
 document.getElementById('e-progress').addEventListener('input',function(){
   document.getElementById('e-prog-out').textContent=this.value+'%';
+});
+document.getElementById('e-logo-url').addEventListener('input',function(){
+  renderLogoPreview(this.value);
+  updateCardEmoji();
 });
 
 // Close modals on overlay click
@@ -2388,5 +3048,6 @@ updateDday();
 setInterval(updateDday,60000);
 fetchRates();
 </script>
-</body>
-</html>
+
+
+</div></body></html>
