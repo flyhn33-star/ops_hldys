@@ -401,6 +401,39 @@ input[type="file"]{display:none;}
   .pay-ed-fields{grid-template-columns:1fr 1fr;}
   .header{flex-direction:column;gap:12px;align-items:flex-start;}
   .header-right{flex-direction:row;}
+
+  /* SKU 리스트 모바일 */
+  .sku-summary{
+    grid-template-columns:1fr auto !important;
+    grid-template-rows:auto auto auto;
+    gap:6px !important;
+    padding:12px !important;
+  }
+  /* 헤더 숨기기 */
+  .sku-list-header{display:none !important;}
+
+  /* 요약 첫 번째 칸 (SKU/상품명) 전체 너비 */
+  .sku-summary > div:first-child{grid-column:1/2;}
+  /* 버튼 오른쪽 고정 */
+  .sku-summary > button{grid-column:2/3;grid-row:1/2;align-self:start;}
+
+  /* 수량/원가/판매가/마진/상태를 한 줄에 */
+  .sku-summary > div:not(:first-child):not(:last-child){
+    font-size:12px;
+  }
+
+  /* 세부 패널 그리드 → 세로 */
+  .sku-detail-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  /* 원가 설정 패널 그리드 → 세로 */
+  #inv-brand-summary .f{margin:0;}
+
+  /* 툴바 */
+  .inv-sys-toolbar{flex-direction:column;align-items:stretch;}
+  .inv-sys-toolbar input{width:100%;}
+  .inv-sys-toolbar button,.inv-sys-toolbar select{width:100%;}
 }
 </style>
 </head>
@@ -750,16 +783,16 @@ input[type="file"]{display:none;}
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;">
               <div class="f" style="margin:0;">
                 <label style="font-size:11px;">국제 배송비 합계 (₩)</label>
-                <input type="number" id="inv-intl-shipping" placeholder="예: 150000" style="font-size:12px;padding:5px 8px;" oninput="saveBrandCostSettings();renderBrandInventory()"/>
+                <input type="number" id="inv-intl-shipping" placeholder="예: 150000" style="font-size:12px;padding:5px 8px;" oninput="saveBrandCostSettings()" onblur="renderBrandInventory()"/>
               </div>
               <div class="f" style="margin:0;">
                 <label style="font-size:11px;">총 주문 수량</label>
-                <input type="number" id="inv-total-qty" placeholder="예: 50" style="font-size:12px;padding:5px 8px;" oninput="saveBrandCostSettings();renderBrandInventory()"/>
+                <input type="number" id="inv-total-qty" placeholder="예: 50" style="font-size:12px;padding:5px 8px;" oninput="saveBrandCostSettings()" onblur="renderBrandInventory()"/>
               </div>
               <div class="f" style="margin:0;">
                 <label style="font-size:11px;">부가세 VAT (%)</label>
                 <div style="display:flex;gap:4px;align-items:center;">
-                  <input type="number" id="inv-vat-include" placeholder="예: 10" min="0" max="100" style="font-size:12px;padding:5px 8px;flex:1;" oninput="saveBrandCostSettings();renderBrandInventory()"/>
+                  <input type="number" id="inv-vat-include" placeholder="예: 10" min="0" max="100" style="font-size:12px;padding:5px 8px;flex:1;" oninput="saveBrandCostSettings()" onblur="renderBrandInventory()"/>
                   <span style="font-size:12px;color:#64748b;">%</span>
                 </div>
                 <div style="display:flex;gap:4px;margin-top:4px;">
@@ -770,7 +803,7 @@ input[type="file"]{display:none;}
               </div>
               <div class="f" style="margin:0;">
                 <label style="font-size:11px;">실제 납부 부가세 총액 (₩) <span style="color:#94a3b8;font-weight:400;">선택</span></label>
-                <input type="number" id="inv-vat-actual" placeholder="예: 48000" style="font-size:12px;padding:5px 8px;" oninput="saveBrandCostSettings();renderBrandInventory()"/>
+                <input type="number" id="inv-vat-actual" placeholder="예: 48000" style="font-size:12px;padding:5px 8px;" oninput="saveBrandCostSettings()" onblur="renderBrandInventory()"/>
                 <div style="font-size:10px;color:#94a3b8;margin-top:3px;">입력 시 % 대신 이 금액을 수량으로 배분</div>
               </div>
             </div>
@@ -778,8 +811,8 @@ input[type="file"]{display:none;}
         </div>
 
         <!-- SKU 카드 리스트 -->
-        <!-- 헤더 -->
-        <div style="display:grid;grid-template-columns:1fr 90px 100px 100px 80px 110px 36px;gap:8px;padding:6px 14px;margin-bottom:2px;">
+        <!-- 헤더 (PC only) -->
+        <div class="sku-list-header" style="display:grid;grid-template-columns:1fr 90px 100px 100px 80px 110px 36px;gap:8px;padding:6px 14px;margin-bottom:2px;">
           <div style="font-size:10px;color:#94a3b8;font-weight:600;">SKU / 상품명</div>
           <div style="font-size:10px;color:#94a3b8;font-weight:600;">수량</div>
           <div style="font-size:10px;color:#94a3b8;font-weight:600;">개당 원가</div>
@@ -2763,33 +2796,24 @@ function applyMarkupInline(cardId, si, realCost, multiplier){
 function uploadSkuImage(e, cardId, si){
   const file=e.target.files[0];
   if(!file) return;
-  if(file.size>10*1024*1024){alert('10MB 이하 이미지만 업로드 가능합니다.');return;}
+  if(file.size>3*1024*1024){alert('3MB 이하 이미지만 업로드 가능합니다.\n더 큰 파일은 Google Drive 링크를 사용해주세요.');return;}
 
   const statusEl=document.getElementById('sku-img-upload-status-'+cardId);
-  if(statusEl) statusEl.textContent='업로드 중...';
+  if(statusEl){statusEl.textContent='업로드 중...';statusEl.style.color='#94a3b8';}
 
-  const skuCode=invData.skus[si]?.skuCode||si;
-  const storageRef=storage.ref(`sku-images/${skuCode}_${Date.now()}.${file.name.split('.').pop()}`);
-  const task=storageRef.put(file);
-
-  task.on('state_changed',
-    snap=>{
-      const pct=Math.round(snap.bytesTransferred/snap.totalBytes*100);
-      if(statusEl) statusEl.textContent=`업로드 중... ${pct}%`;
-    },
-    err=>{
-      if(statusEl){statusEl.textContent='업로드 실패: '+err.message;statusEl.style.color='#ef4444';}
-    },
-    ()=>{
-      task.snapshot.ref.getDownloadURL().then(url=>{
-        invData.skus[si].imageUrl=url;
-        invSave();
-        updateSkuImage(cardId, url);
-        if(statusEl){statusEl.textContent='업로드 완료!';statusEl.style.color='#27500A';}
-        setTimeout(()=>{if(statusEl)statusEl.textContent='';},3000);
-      });
-    }
-  );
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const base64=ev.target.result;
+    invData.skus[si].imageUrl=base64;
+    invSave();
+    updateSkuImage(cardId, base64);
+    if(statusEl){statusEl.textContent='업로드 완료!';statusEl.style.color='#27500A';}
+    setTimeout(()=>{if(statusEl)statusEl.textContent='';},3000);
+  };
+  reader.onerror=()=>{
+    if(statusEl){statusEl.textContent='업로드 실패';statusEl.style.color='#ef4444';}
+  };
+  reader.readAsDataURL(file);
   e.target.value='';
 }
 
