@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!-- saved from url=(0042)file:///C:/Users/user/Downloads/index.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Holiday Ops</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="./Holiday Ops_files/pdf.min.js.다운로드"></script>
+<script src="./Holiday Ops_files/xlsx.full.min.js.다운로드"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#fff7f4;color:#1a1a1a;min-height:100vh;}
@@ -360,8 +360,8 @@ input[type="file"]{display:none;}
 
 <!-- DEBUG BAR -->
 <div class="debug-bar" id="debug-bar">
-  <div class="debug-dot"></div>
-  <span id="debug-msg">Holiday Ops v1.0 — 로컬 저장소 연결됨</span>
+  <div class="debug-dot" style="background: rgb(34, 197, 94);"></div>
+  <span id="debug-msg">JSON 내보내기 완료</span>
   <span style="margin-left:auto;cursor:pointer;color:#64748b;" onclick="clearStorage()">초기화</span>
 </div>
 
@@ -373,14 +373,14 @@ input[type="file"]{display:none;}
   </div>
   <div class="header-right">
     <div class="launch-block" onclick="openLaunchModal()" title="클릭해서 설정">
-      <div class="launch-val" id="launch-val">D-??</div>
+      <div class="launch-val" id="launch-val">D-30</div>
       <div class="launch-label">런칭까지 ✎</div>
     </div>
     <div class="goal-block" onclick="openLaunchModal()" title="클릭해서 목표 수정">
       <div class="goal-label">브랜드 목표</div>
-      <div class="goal-val" id="goal-val">— / 30</div>
-      <div class="goal-bar-bg" style="margin-top:6px;"><div class="goal-bar-fill" id="goal-bar-fill"></div></div>
-      <div class="goal-completion-label" id="goal-completion-label"></div>
+      <div class="goal-val" id="goal-val">3 / 30</div>
+      <div class="goal-bar-bg" style="margin-top:6px;"><div class="goal-bar-fill" id="goal-bar-fill" style="width: 10%;"></div></div>
+      <div class="goal-completion-label" id="goal-completion-label">결제 완료  10%</div>
     </div>
   </div>
 </div>
@@ -390,24 +390,341 @@ input[type="file"]{display:none;}
 
   <!-- MAIN TABS -->
   <div class="main-tabs">
-    <div class="main-tab active" onclick="switchMainTab('brands')">브랜드 관리</div>
-    <div class="main-tab" onclick="switchMainTab('inventory')">상품 · SKU · 재고</div>
+    <div class="main-tab active" onclick="switchMainTab(&#39;brands&#39;)">브랜드 관리</div>
+    <div class="main-tab" onclick="switchMainTab(&#39;inventory&#39;)">상품 · SKU · 재고</div>
   </div>
 
   <!-- VIEW: 브랜드 관리 -->
   <div class="main-view active" id="main-brands">
-    <div class="summary" id="summary"></div>
-    <div class="notice-section" id="notice-section"></div>
+    <div class="summary" id="summary">
+    <div class="stat"><div class="stat-label">전체 브랜드</div><div class="stat-val">8</div></div>
+    <div class="stat"><div class="stat-label">결제 완료</div><div class="stat-val">3 / 8</div></div>
+    <div class="stat"><div class="stat-label">물품 수령</div><div class="stat-val">1 / 8</div></div>
+    <div class="stat"><div class="stat-label">평균 진행률</div><div class="stat-val">58%</div></div>
+  </div>
+    <div class="notice-section" id="notice-section">
+    <div class="notice-banner" style="margin-bottom:8px;">
+      <div class="notice-icon"><div class="notice-dot-red"></div></div>
+      <div class="notice-body">
+        <div class="notice-title">확인해야 될 결제 건이 있습니다</div>
+        <div class="notice-items">
+          <div class="notice-item"><strong>Sorekara</strong> — 대금 납부 필요 <span style="color:#94a3b8;font-weight:400;">/ 인보이스 발행 후 결제 예정</span></div><div class="notice-item"><strong>Lorenzi</strong> — 프랑스 DHL 원격픽업 결제건 <span style="color:#94a3b8;font-weight:400;">/ 원격픽업 결제 처리 필요</span></div><div class="notice-item"><strong>Sorekara</strong> — 독점계약서 서명 필요 <span style="color:#94a3b8;font-weight:400;">/ 전자서명 또는 자필서명 후 스캔</span></div>
+        </div>
+        <div class="notice-meta">2026. 4. 13. 등록</div>
+      </div>
+      <button class="notice-close" onclick="dismissNotice(&#39;o2di2ki&#39;)">닫기</button>
+    </div>
+  </div>
     <div class="toolbar">
-      <input type="text" id="search-input" placeholder="브랜드 검색..." oninput="render()"/>
+      <input type="text" id="search-input" placeholder="브랜드 검색..." oninput="render()">
       <button class="notice-reg-btn" onclick="openNoticeModal()">공지 등록</button>
       <button class="export-btn" onclick="openCalcModal()">환율 계산기</button>
       <button class="export-btn" onclick="exportJSON()">JSON 내보내기</button>
       <button class="export-btn" onclick="importJSON()">JSON 불러오기</button>
-      <input type="file" id="import-file" accept=".json" onchange="handleImport(event)"/>
+      <input type="file" id="import-file" accept=".json" onchange="handleImport(event)">
       <button class="add-brand-btn" onclick="openAddBrand()">+ 브랜드 추가</button>
     </div>
-    <div class="grid" id="cards"></div>
+    <div class="grid" id="cards"><div class="brand-card">
+      <div class="bh"><span class="bn">Sorekara</span><span class="badge b-unpaid">미결제</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">283552</span>
+          <span class="pay-krw">₩2,651,211</span>
+        </div>
+        <span class="pay-meta">04/14 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 불가</span>
+        <span class="tag">관세: 있음</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        EMS · 직배송
+      </div>
+      <div class="pending-pill"><div class="pending-dot"></div>블로킹 2건</div>
+      <div><span class="arrival-tag">04/21 도착예정</span></div>
+      <div class="invoice-preview">인보이스: COMMERCIAL INVOICE.pdf</div>
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-ok">결제가능</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:86%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">86%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="viewInvoice(3)" title="인보이스 보기">📄 Invoice</button>
+        <button class="card-btn pending-btn" onclick="openPendingPanel(3)">Pending</button>
+      </div>
+    </div><div class="brand-card">
+      <div class="bh"><span class="bn">Zigzagzurich</span><span class="badge b-unpaid">미결제</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      
+      
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-inv">인보이스대기</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:20%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">20%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(4)" title="인보이스 업로드">↑ Invoice</button>
+        
+      </div>
+    </div><div class="brand-card">
+      <div class="bh"><span class="bn">DECOR WALTER</span><span class="badge b-unpaid">미결제</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      
+      
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-inv">인보이스대기</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:20%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">20%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(5)" title="인보이스 업로드">↑ Invoice</button>
+        
+      </div>
+    </div><div class="brand-card">
+      <div class="bh"><span class="bn">Alessandra</span><span class="badge b-unpaid">미결제</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      
+      
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-inv">인보이스대기</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:20%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">20%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(6)" title="인보이스 업로드">↑ Invoice</button>
+        
+      </div>
+    </div><div class="brand-card">
+      <div class="bh"><span class="bn">mark+fold</span><span class="badge b-unpaid">미결제</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row unpaid-row">
+        <div class="pay-left"><div class="pay-dot dot-unpaid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">—</span>
+          
+        </div>
+        <span class="pay-meta">미정 · 미결제</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확인중</span>
+        <span class="tag">관세: 확인중</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk"><div class="chkbox"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="pending-pill"><div class="pending-dot"></div>블로킹 1건</div>
+      
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-inv">인보이스대기</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:20%;background:#BA7517;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">20%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(7)" title="인보이스 업로드">↑ Invoice</button>
+        <button class="card-btn pending-btn" onclick="openPendingPanel(7)">Pending</button>
+      </div>
+    </div><div class="brand-card alldone">
+      <div class="bh"><span class="bn">CLINQ</span><span class="badge b-paid">결제 완료</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row paid-row">
+        <div class="pay-left"><div class="pay-dot dot-paid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">€3,160</span>
+          <span class="pay-krw">₩5,501,560</span>
+        </div>
+        <span class="pay-meta">04/07 · 완료</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 가능</span>
+        <span class="tag">관세: 0 예상</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk on"><div class="chkbox on"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        DHL · 직배송
+      </div>
+      
+      <div><span class="arrival-tag">05/13 도착예정</span></div>
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-wait">배송대기</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:100%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">100%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(0)" title="인보이스 업로드">↑ Invoice</button>
+        
+      </div>
+    </div><div class="brand-card alldone">
+      <div class="bh"><span class="bn">Lorenzi</span><span class="badge b-paid">결제 완료</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row paid-row">
+        <div class="pay-left"><div class="pay-dot dot-paid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">€3,135</span>
+          <span class="pay-krw">₩5,470,575</span>
+        </div>
+        <span class="pay-meta">04/07 · 완료</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확보</span>
+        <span class="tag">관세: 있음</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk on"><div class="chkbox on"></div>결제</div><div class="chk"><div class="chkbox"></div>통관</div><div class="chk"><div class="chkbox"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        DHL · 직배송
+      </div>
+      
+      <div><span class="arrival-tag">04/28 도착예정 · 주문제작2주소요, DHL</span></div>
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-done">완료</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:100%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">100%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(1)" title="인보이스 업로드">↑ Invoice</button>
+        
+      </div>
+    </div><div class="brand-card alldone">
+      <div class="bh"><span class="bn">Astic Brille</span><span class="badge b-paid">결제 완료</span></div>
+      
+      <div class="pay-timeline">
+      <div class="pay-row paid-row">
+        <div class="pay-left"><div class="pay-dot dot-paid"></div><span class="pay-label">1차 결제</span></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;">
+          <span class="pay-amount">€656.9</span>
+          <span class="pay-krw">₩1,143,663</span>
+        </div>
+        <span class="pay-meta">04/07 · 완료</span>
+      </div></div>
+      <div class="meta-row">
+        <span class="tag">FTA: 확보</span>
+        <span class="tag">관세: 0</span>
+        <span class="tag">VAT: 있음</span>
+      </div>
+      <div class="checks"><div class="chk on"><div class="chkbox on"></div>결제</div><div class="chk on"><div class="chkbox on"></div>통관</div><div class="chk on"><div class="chkbox on"></div>발송</div></div>
+      
+      <div class="delivery-info"><div class="delivery-dot"></div>
+        FedEx · 원격픽업 · 수령 완료
+      </div>
+      
+      <div><span class="arrival-tag arrived">04/09 도착완료 · FedEx 원격픽업 수령 완료</span></div>
+      
+      <div>
+        <div class="sr" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:12px;color:#64748b;">진행률</span>
+          <span class="badge b-done">완료</span>
+        </div>
+        <div style="height:4px;background:#e2e8f0;border-radius:99px;overflow:hidden;">
+          <div style="height:100%;width:100%;background:#1D9E75;border-radius:99px;"></div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#94a3b8;margin-top:3px;">100%</div>
+      </div>
+      <div class="card-btns" onclick="event.stopPropagation()">
+        <button class="card-btn inv-btn" onclick="triggerInvoiceUploadCard(2)" title="인보이스 업로드">↑ Invoice</button>
+        
+      </div>
+    </div></div>
 
   <!-- PENDING PANEL -->
   <div class="panel" id="pending-panel">
@@ -421,8 +738,8 @@ input[type="file"]{display:none;}
     <div class="sec">서명 방식 선택</div>
     <div style="font-size:13px;color:#64748b;margin-bottom:8px;">독점계약서 서명 방법을 선택하세요</div>
     <div class="sign-options">
-      <div class="sign-opt" id="sign-electronic" onclick="selectSign('electronic')">전자서명</div>
-      <div class="sign-opt" id="sign-manual" onclick="selectSign('manual')">자필서명 후 스캔</div>
+      <div class="sign-opt" id="sign-electronic" onclick="selectSign(&#39;electronic&#39;)">전자서명</div>
+      <div class="sign-opt" id="sign-manual" onclick="selectSign(&#39;manual&#39;)">자필서명 후 스캔</div>
     </div>
     <div class="sign-detail" id="sign-detail"></div>
     <div class="divider"></div>
@@ -442,20 +759,20 @@ input[type="file"]{display:none;}
     </div>
 
     <div class="editor-tabs">
-      <div class="etab active" onclick="switchETab('info')">브랜드 정보</div>
-      <div class="etab" onclick="switchETab('payment')">결제</div>
-      <div class="etab" onclick="switchETab('delivery')">배송</div>
-      <div class="etab" onclick="switchETab('invoice')">인보이스</div>
-      <div class="etab" onclick="switchETab('tax')">납세/배송일정</div>
-      <div class="etab" onclick="switchETab('pending')">Pending</div>
+      <div class="etab active" onclick="switchETab(&#39;info&#39;)">브랜드 정보</div>
+      <div class="etab" onclick="switchETab(&#39;payment&#39;)">결제</div>
+      <div class="etab" onclick="switchETab(&#39;delivery&#39;)">배송</div>
+      <div class="etab" onclick="switchETab(&#39;invoice&#39;)">인보이스</div>
+      <div class="etab" onclick="switchETab(&#39;tax&#39;)">납세/배송일정</div>
+      <div class="etab" onclick="switchETab(&#39;pending&#39;)">Pending</div>
     </div>
 
     <!-- TAB: 브랜드 정보 -->
     <div class="etab-section active" id="etab-info">
       <div class="sec">기본</div>
       <div class="fg">
-        <div class="f"><label>브랜드명</label><input id="e-name" type="text"/></div>
-        <div class="f"><label>국가 / 원산지</label><input id="e-country" type="text" placeholder="예: 프랑스, 독일, 일본"/></div>
+        <div class="f"><label>브랜드명</label><input id="e-name" type="text"></div>
+        <div class="f"><label>국가 / 원산지</label><input id="e-country" type="text" placeholder="예: 프랑스, 독일, 일본"></div>
       </div>
       <div class="fg">
         <div class="f"><label>진행 상태</label>
@@ -467,40 +784,40 @@ input[type="file"]{display:none;}
           </select>
         </div>
         <div class="f"><label>진행률</label>
-          <div class="pf"><input type="range" id="e-progress" min="0" max="100" step="1"/><span id="e-prog-out">0%</span></div>
+          <div class="pf"><input type="range" id="e-progress" min="0" max="100" step="1"><span id="e-prog-out">0%</span></div>
         </div>
       </div>
       <div class="fg">
         <div class="f"><label>FTA</label>
           <select id="e-fta"><option value="가능">가능</option><option value="확인중">확인중</option><option value="확보">확보</option><option value="불가">불가</option></select>
         </div>
-        <div class="f"><label>관세</label><input id="e-duty" type="text"/></div>
+        <div class="f"><label>관세</label><input id="e-duty" type="text"></div>
       </div>
       <div class="fg">
         <div class="f"><label>VAT</label>
           <select id="e-vat"><option value="있음">있음</option><option value="없음">없음</option></select>
         </div>
-        <div class="f"><label>카테고리</label><input id="e-category" type="text" placeholder="예: 안경, 의류, 액세서리"/></div>
+        <div class="f"><label>카테고리</label><input id="e-category" type="text" placeholder="예: 안경, 의류, 액세서리"></div>
       </div>
 
       <div class="sec">연락처 / 담당자</div>
       <div class="fg">
-        <div class="f"><label>담당자명</label><input id="e-contact-name" type="text" placeholder="홍길동"/></div>
-        <div class="f"><label>이메일</label><input id="e-contact-email" type="email" placeholder="contact@brand.com"/></div>
+        <div class="f"><label>담당자명</label><input id="e-contact-name" type="text" placeholder="홍길동"></div>
+        <div class="f"><label>이메일</label><input id="e-contact-email" type="email" placeholder="contact@brand.com"></div>
       </div>
       <div class="fg">
-        <div class="f"><label>전화 / WhatsApp</label><input id="e-contact-phone" type="text" placeholder="+33 6 00 00 00 00"/></div>
-        <div class="f"><label>언어</label><input id="e-contact-lang" type="text" placeholder="예: 프랑스어, 영어"/></div>
+        <div class="f"><label>전화 / WhatsApp</label><input id="e-contact-phone" type="text" placeholder="+33 6 00 00 00 00"></div>
+        <div class="f"><label>언어</label><input id="e-contact-lang" type="text" placeholder="예: 프랑스어, 영어"></div>
       </div>
 
       <div class="sec">링크</div>
       <div class="fg">
-        <div class="f"><label>공식 웹사이트</label><input id="e-link-web" type="url" placeholder="https://brand.com"/></div>
-        <div class="f"><label>인스타그램</label><input id="e-link-insta" type="text" placeholder="@brandname 또는 URL"/></div>
+        <div class="f"><label>공식 웹사이트</label><input id="e-link-web" type="url" placeholder="https://brand.com"></div>
+        <div class="f"><label>인스타그램</label><input id="e-link-insta" type="text" placeholder="@brandname 또는 URL"></div>
       </div>
       <div class="fg">
-        <div class="f"><label>링크트리 / 기타</label><input id="e-link-other" type="url" placeholder="https://linktr.ee/..."/></div>
-        <div class="f"><label>카탈로그 / 룩북 URL</label><input id="e-link-catalog" type="url" placeholder="https://..."/></div>
+        <div class="f"><label>링크트리 / 기타</label><input id="e-link-other" type="url" placeholder="https://linktr.ee/..."></div>
+        <div class="f"><label>카탈로그 / 룩북 URL</label><input id="e-link-catalog" type="url" placeholder="https://..."></div>
       </div>
 
       <div class="sec">메모</div>
@@ -508,9 +825,9 @@ input[type="file"]{display:none;}
 
       <div class="sec">완료 체크</div>
       <div class="chk-ed">
-        <label><input type="checkbox" id="e-paid-done"/> 결제 완료 (전체)</label>
-        <label><input type="checkbox" id="e-customs-done"/> 통관 완료</label>
-        <label><input type="checkbox" id="e-shipped-done"/> 발송 완료</label>
+        <label><input type="checkbox" id="e-paid-done"> 결제 완료 (전체)</label>
+        <label><input type="checkbox" id="e-customs-done"> 통관 완료</label>
+        <label><input type="checkbox" id="e-shipped-done"> 발송 완료</label>
       </div>
     </div>
 
@@ -525,31 +842,27 @@ input[type="file"]{display:none;}
     <div class="etab-section" id="etab-delivery">
       <div class="sec">배송 정보</div>
       <div class="fg">
-        <div class="f"><label>배송사</label><input id="e-carrier" type="text" placeholder="FedEx, DHL, 우체국..."/></div>
-        <div class="f"><label>배송 방식</label><input id="e-delivery-method" type="text" placeholder="원격픽업, 직배송..."/></div>
+        <div class="f"><label>배송사</label><input id="e-carrier" type="text" placeholder="FedEx, DHL, 우체국..."></div>
+        <div class="f"><label>배송 방식</label><input id="e-delivery-method" type="text" placeholder="원격픽업, 직배송..."></div>
       </div>
       <div class="fg">
-        <div class="f"><label>트래킹 번호</label><input id="e-tracking" type="text"/></div>
+        <div class="f"><label>트래킹 번호</label><input id="e-tracking" type="text"></div>
         <div class="f"><label>수령 완료</label>
           <select id="e-received"><option value="no">미수령</option><option value="yes">수령 완료</option></select>
         </div>
       </div>
       <div class="sec">물품 도착 일정</div>
       <div class="fg">
-        <div class="f"><label>예정 도착일</label><input id="e-arrival" type="date"/></div>
-        <div class="f"><label>메모</label><input id="e-arrival-note" type="text" placeholder="한국 창고 도착 등..."/></div>
+        <div class="f"><label>예정 도착일</label><input id="e-arrival" type="date"></div>
+        <div class="f"><label>메모</label><input id="e-arrival-note" type="text" placeholder="한국 창고 도착 등..."></div>
       </div>
     </div>
 
     <!-- TAB: 인보이스 -->
     <div class="etab-section" id="etab-invoice">
       <div class="sec">인보이스</div>
-      <input type="file" id="invoice-upload" accept=".pdf,.jpg,.jpeg,.png" onchange="handleInvoiceUpload(event)" style="display:none"/>
-      <div id="inv-dropzone" class="inv-drop-zone"
-        onclick="document.getElementById('invoice-upload').click()"
-        ondragover="event.preventDefault();this.classList.add('dragover')"
-        ondragleave="this.classList.remove('dragover')"
-        ondrop="handleInvDrop(event)">
+      <input type="file" id="invoice-upload" accept=".pdf,.jpg,.jpeg,.png" onchange="handleInvoiceUpload(event)" style="display:none">
+      <div id="inv-dropzone" class="inv-drop-zone" onclick="document.getElementById(&#39;invoice-upload&#39;).click()" ondragover="event.preventDefault();this.classList.add(&#39;dragover&#39;)" ondragleave="this.classList.remove(&#39;dragover&#39;)" ondrop="handleInvDrop(event)">
         <div class="inv-drop-label">클릭하거나 파일을 여기에 드래그</div>
         <div class="inv-drop-sub">PDF · JPG · PNG 지원</div>
       </div>
@@ -559,8 +872,8 @@ input[type="file"]{display:none;}
     <!-- TAB: 납세/배송일정 -->
     <div class="etab-section" id="etab-tax">
       <div class="detail-tabs">
-        <div class="dtab active" id="tab-tax" onclick="switchTab('tax')">납세 처리</div>
-        <div class="dtab" id="tab-ship" onclick="switchTab('ship')">배송 스케줄</div>
+        <div class="dtab active" id="tab-tax" onclick="switchTab(&#39;tax&#39;)">납세 처리</div>
+        <div class="dtab" id="tab-ship" onclick="switchTab(&#39;ship&#39;)">배송 스케줄</div>
       </div>
       <div class="detail-section active" id="ds-tax">
         <div class="tax-row" id="tax-list"></div>
@@ -592,17 +905,17 @@ input[type="file"]{display:none;}
   <div class="main-view" id="main-inventory">
     <div style="padding:16px 0 8px;">
       <div class="inv-sys-toolbar">
-        <input type="text" id="inv-search" placeholder="검색..." oninput="renderAllInvTables()"/>
+        <input type="text" id="inv-search" placeholder="검색..." oninput="renderAllInvTables()">
         <button class="xlsx-btn" onclick="exportXlsx()">Excel 내보내기</button>
-        <button class="xlsx-import-btn" onclick="document.getElementById('xlsx-import-file').click()">Excel 불러오기</button>
-        <input type="file" id="xlsx-import-file" accept=".xlsx,.xls" style="display:none" onchange="importXlsx(event)"/>
+        <button class="xlsx-import-btn" onclick="document.getElementById(&#39;xlsx-import-file&#39;).click()">Excel 불러오기</button>
+        <input type="file" id="xlsx-import-file" accept=".xlsx,.xls" style="display:none" onchange="importXlsx(event)">
         <button class="add-brand-btn" onclick="addProductRow()">+ 상품 추가</button>
       </div>
       <div class="val-msg" id="val-msg"></div>
       <div class="inv-sub-tabs">
-        <div class="inv-stab active" onclick="switchInvTab('products')">상품</div>
-        <div class="inv-stab" onclick="switchInvTab('sku')">SKU</div>
-        <div class="inv-stab" onclick="switchInvTab('stock')">재고</div>
+        <div class="inv-stab active" onclick="switchInvTab(&#39;products&#39;)">상품</div>
+        <div class="inv-stab" onclick="switchInvTab(&#39;sku&#39;)">SKU</div>
+        <div class="inv-stab" onclick="switchInvTab(&#39;stock&#39;)">재고</div>
       </div>
 
       <!-- 상품 시트 -->
@@ -654,11 +967,11 @@ input[type="file"]{display:none;}
     <div class="modal-title">목표 설정</div>
     <div class="f">
       <label>런칭 목표일 (D-day 기준)</label>
-      <input type="date" id="launch-target-input"/>
+      <input type="date" id="launch-target-input">
     </div>
     <div class="f">
       <label>목표 브랜드 수</label>
-      <input type="number" id="brand-goal-input" min="1" max="500" placeholder="예: 30"/>
+      <input type="number" id="brand-goal-input" min="1" max="500" placeholder="예: 30">
     </div>
     <div class="f">
       <label>브랜드 "완료" 기준</label>
@@ -683,14 +996,14 @@ input[type="file"]{display:none;}
   <div class="modal">
     <div class="modal-title">새 브랜드 추가</div>
     <div class="fg">
-      <div class="f"><label>브랜드명 *</label><input type="text" id="new-name" placeholder="브랜드명"/></div>
-      <div class="f"><label>금액</label><input type="text" id="new-amount" placeholder="€0 / 0원"/></div>
+      <div class="f"><label>브랜드명 *</label><input type="text" id="new-name" placeholder="브랜드명"></div>
+      <div class="f"><label>금액</label><input type="text" id="new-amount" placeholder="€0 / 0원"></div>
     </div>
     <div class="fg">
       <div class="f"><label>FTA</label>
         <select id="new-fta"><option value="확인중">확인중</option><option value="가능">가능</option><option value="확보">확보</option><option value="불가">불가</option></select>
       </div>
-      <div class="f"><label>관세</label><input type="text" id="new-duty" placeholder="있음 / 0 / 0%"/></div>
+      <div class="f"><label>관세</label><input type="text" id="new-duty" placeholder="있음 / 0 / 0%"></div>
     </div>
     <div class="fg">
       <div class="f"><label>VAT</label>
@@ -721,8 +1034,8 @@ input[type="file"]{display:none;}
           <span id="inv-page-info">1 / 1</span>
           <button onclick="invChangePage(1)" style="padding:3px 8px;border:1px solid #e2e8f0;border-radius:5px;background:#fff;cursor:pointer;">›</button>
         </span>
-        <button class="inv-replace-btn" onclick="document.getElementById('inv-replace-upload').click()">파일 교체</button>
-        <input type="file" id="inv-replace-upload" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleInvReplace(event)"/>
+        <button class="inv-replace-btn" onclick="document.getElementById(&#39;inv-replace-upload&#39;).click()">파일 교체</button>
+        <input type="file" id="inv-replace-upload" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleInvReplace(event)">
         <button class="inv-close-btn" onclick="closeInvModal()">닫기</button>
       </div>
     </div>
@@ -740,7 +1053,7 @@ input[type="file"]{display:none;}
     <div class="notice-check-list" id="notice-check-list"></div>
     <div class="f" style="margin-top:8px;">
       <label style="font-size:12px;font-weight:500;color:#475569;">공지 제목 (선택)</label>
-      <input type="text" id="notice-title-input" placeholder="예: 확인해야 될 결제 건이 있습니다"/>
+      <input type="text" id="notice-title-input" placeholder="예: 확인해야 될 결제 건이 있습니다">
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeNoticeModal()">취소</button>
@@ -756,7 +1069,7 @@ input[type="file"]{display:none;}
     <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end;">
       <div class="f">
         <label>금액</label>
-        <input type="number" id="calc-amount" placeholder="0" oninput="calcConvert()" style="font-size:20px;font-weight:600;"/>
+        <input type="number" id="calc-amount" placeholder="0" oninput="calcConvert()" style="font-size:20px;font-weight:600;">
       </div>
       <div class="f" style="padding-bottom:8px;">
         <select id="calc-currency" onchange="calcAutoFillRate();calcConvert()" style="font-size:13px;padding:7px 8px;border:1px solid #e2e8f0;border-radius:8px;">
@@ -778,11 +1091,9 @@ input[type="file"]{display:none;}
     </div>
     <div class="f">
       <label>적용 환율 (직접 입력)</label>
-      <input type="number" id="calc-rate" placeholder="예: 1480" oninput="calcConvert()" step="0.01"/>
+      <input type="number" id="calc-rate" placeholder="예: 1480" oninput="calcConvert()" step="0.01">
     </div>
-    <div id="calc-rate-ref" style="font-size:12px;color:#94a3b8;line-height:1.6;padding:8px 10px;background:#f8fafc;border-radius:8px;">
-      참고 환율을 불러오는 중... (실시간 환율은 네트워크 연결 시 자동 조회)
-    </div>
+    <div id="calc-rate-ref" style="font-size:12px;color:#94a3b8;line-height:1.6;padding:8px 10px;background:#f8fafc;border-radius:8px;"><span style="color:#94a3b8;font-size:11px;">참고 환율 (캐시 기준) — EUR: ₩1,739 &nbsp;|&nbsp; USD: ₩1,486 &nbsp;|&nbsp; JPY: ₩9.35 &nbsp;|&nbsp; GBP: ₩1,996 &nbsp;|&nbsp; CHF: ₩1,880 &nbsp;|&nbsp; CNY: ₩216 &nbsp;|&nbsp; SEK: ₩159.7 &nbsp;|&nbsp; DKK: ₩232.6 &nbsp;|&nbsp; AUD: ₩1,044</span></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeCalcModal()">닫기</button>
     </div>
@@ -2257,5 +2568,6 @@ fetchRates();
 render();
 renderNotices();
 </script>
-</body>
-</html>
+
+
+</div></body></html>
