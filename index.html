@@ -3174,7 +3174,21 @@ function renderSkuModalEdit(s){
           <div class="f" style="margin:0;"><label>오더 상태</label><select id="sme-orderStatus">${statusOpts}</select></div>
         </div>
       </div>
-    </div>`;
+   <div class="sku-modal-sec" style="margin-top:14px;">
+        <div class="sku-modal-sec-title">추가 원가 (SKU별)</div>
+        <div class="sku-modal-grid">
+          <div class="f" style="margin:0;"><label>포장비 (₩/개)</label><input id="sme-packagingPerUnit" type="number" value="${escVal(s.packagingPerUnit||'')}"/></div>
+          <div class="f" style="margin:0;"><label>기타 비용 (₩/개)</label><input id="sme-otherCostPerUnit" type="number" value="${escVal(s.otherCostPerUnit||'')}"/></div>
+        </div>
+      </div>
+      <div class="sku-modal-sec" style="margin-top:14px;">
+        <div class="sku-modal-sec-title">광고 성과 입력</div>
+        <div class="sku-modal-grid">
+          <div class="f" style="margin:0;"><label>광고비 (₩)</label><input id="sme-adSpend" type="number" value="${escVal(s.adSpend||'')}" placeholder="0"/></div>
+          <div class="f" style="margin:0;"><label>매출 (₩)</label><input id="sme-revenue" type="number" value="${escVal(s.revenue||'')}" placeholder="0"/></div>
+        </div>
+      </div>
+      </div>`;
 }
 
 function uploadSkuImageModal(e){
