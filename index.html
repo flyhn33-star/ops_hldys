@@ -2889,7 +2889,10 @@ function getPricingBreakdown(s, brand){
   } else if(settings.vatRate){
     vatPerUnit=Math.round(unitCost*(settings.vatRate/100));
   }
-  const realCost=unitCost+vatPerUnit;
+  const packagingPerUnit=parseFloat(s.packagingPerUnit||0)||0;
+  const otherCostPerUnit=parseFloat(s.otherCostPerUnit||0)||0;
+  const realCost=unitCost+vatPerUnit+packagingPerUnit+otherCostPerUnit;
+  return{totalKrw,wholesaleUnitKrw,shippingPerUnit,dutyPerUnit,unitCost,vatPerUnit,packagingPerUnit,otherCostPerUnit,realCost,qty,costMode};
 
   return {totalKrw, wholesaleUnitKrw, shippingPerUnit, dutyPerUnit, unitCost, vatPerUnit, realCost, qty, costMode};
 }
@@ -3011,6 +3014,10 @@ function saveSkuModal(){
   s.price=g('price');
   s.orderStatus=g('orderStatus')||'주문완료';
   s.imageUrl=g('imageUrl');
+  s.packagingPerUnit=parseFloat(g('packagingPerUnit'))||0;
+  s.otherCostPerUnit=parseFloat(g('otherCostPerUnit'))||0;
+  s.adSpend=parseFloat(g('adSpend'))||0;
+  s.revenue=parseFloat(g('revenue'))||0;
   const stockItem=(invData.stock||[]).find(st=>st.skuCode===s.skuCode);
   const qty=g('qty');
   const arrivalDate=g('arrivalDate');
