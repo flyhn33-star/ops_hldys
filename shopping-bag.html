@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HLDYS 쇼핑백 제작</title>
+<style>
+:root{
+  --pink:#E91E63;--pink-d:#AD1457;--pink-l:#fce4ec;--orange:#FF671D;
+  --ink:#1a1a1a;--muted:#64748b;--line:#ffd0d0;--bg:#fff;--card:#fff;--soft:#fff7fa;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#f1f5f9;--muted:#94a3b8;--line:#4a2233;--bg:#140d10;--card:#1e1418;--soft:#26181e;--pink-l:#3a1626;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#f1f5f9;--muted:#94a3b8;--line:#4a2233;--bg:#140d10;--card:#1e1418;--soft:#26181e;--pink-l:#3a1626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','PingFang SC',Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;}
+.app{max-width:1100px;margin:0 auto;padding:16px;}
+.header{background:linear-gradient(135deg,#AD1457 0%,#E91E63 50%,#F06292 100%);border-radius:14px;padding:20px 24px;color:#fff;box-shadow:0 4px 20px rgba(233,30,99,.3);margin-bottom:16px;}
+.header .title{font-size:22px;font-weight:700;letter-spacing:2px;}
+.header .sub{font-size:12px;opacity:.8;margin-top:4px;}
+.header a{color:#fff;font-size:12px;opacity:.85;}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;}
+h2{font-size:16px;font-weight:800;margin-bottom:4px;}
+.desc{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.grid{display:grid;gap:12px;}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--soft);}
+.opt{cursor:pointer;transition:all .15s;}
+.opt.on{border:2px solid var(--pink);box-shadow:0 2px 12px rgba(233,30,99,.15);}
+.opt h3{font-size:14px;margin:8px 0 2px;}
+.opt p{font-size:11.5px;color:var(--muted);}
+.mock{display:flex;justify-content:center;align-items:flex-end;height:190px;background:repeating-conic-gradient(#e5e7eb 0% 25%,#f8fafc 0% 50%) 50%/16px 16px;border-radius:8px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--pink-l);color:var(--pink);}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;}
+th{font-size:11px;color:var(--muted);font-weight:700;}
+td.num{font-variant-numeric:tabular-nums;}
+input[type=number],input[type=text],select{font-size:13px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:100%;}
+input[type=number]{max-width:90px;}
+.tbl-wrap{overflow-x:auto;}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;}
+.fields label{font-size:11px;color:var(--muted);font-weight:600;display:block;margin-bottom:3px;}
+textarea{width:100%;min-height:300px;font-size:12.5px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--ink);font-family:inherit;line-height:1.6;}
+.btn{padding:8px 16px;background:var(--orange);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;}
+.btn.ghost{background:transparent;color:var(--pink);border:1px solid var(--pink);}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.total{font-size:13px;font-weight:700;margin-top:10px;}
+ul.notes{font-size:12px;padding-left:18px;color:var(--muted);}
+ul.notes li{margin-bottom:4px;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:8px 16px;border-radius:99px;font-size:12px;opacity:0;transition:opacity .2s;pointer-events:none;}
+.toast.show{opacity:1;}
+@media (max-width:600px){.header .title{font-size:18px;}section{padding:14px;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="title">HLDYS · 쇼핑백 제작</div>
+    <div class="sub">투명 PVC 쇼핑백 (透明PVC手提袋) 디자인 시안 · 사이즈 선정 · 공급사 제작 요청서</div>
+    <div style="margin-top:8px"><a href="index.html">← HLDYS OPS로 돌아가기</a></div>
+  </div>
+
+  <!-- 1. 디자인 -->
+  <section>
+    <h2>① 디자인 시안 선택</h2>
+    <div class="desc">공급사 이미지 기준 투명 PVC + 로프 손잡이 타입. 로고는 1도 실크인쇄(丝印) 기준, 시안을 클릭해서 선택하세요.</div>
+    <div class="grid g3" id="designs"></div>
+  </section>
+
+  <!-- 2. 사이즈 -->
+  <section>
+    <h2>② 사이즈 · 수량</h2>
+    <div class="desc">공급사 고정 사이즈(1~10号)를 쓰면 단가가 낮고 발송이 빠릅니다. HLDYS 카테고리(SPACE: Textile·Bath·Objects·Care / WEAR: Bags·Accessories)에 맞춰 <b>S·M·L 3종을 기본 추천</b>합니다. 수량을 0으로 두면 요청서에서 빠집니다.</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>번호</th><th>사이즈 (가로×폭×높이)</th><th>용도 / HLDYS 카테고리</th><th>추천</th><th>수량(장)</th></tr></thead>
+        <tbody id="sizes"></tbody>
+      </table>
+    </div>
+    <div class="total" id="total"></div>
+  </section>
+
+  <!-- 3. 사양 -->
+  <section>
+    <h2>③ 제작 사양</h2>
+    <div class="desc">모르는 항목은 기본값 그대로 두고 공급사 추천을 받아도 됩니다.</div>
+    <div class="fields">
+      <div><label>소재 두께 (材质厚度)</label>
+        <select id="f-thick"><option value="0.2mm">0.2mm (얇음·저가)</option><option value="0.3mm" selected>0.3mm (표준)</option><option value="0.4mm">0.4mm (고급·형태 유지)</option></select></div>
+      <div><label>인쇄 면 (印刷面)</label>
+        <select id="f-side"><option value="单面">단면</option><option value="双面" selected>양면</option></select></div>
+      <div><label>손잡이 (手提绳)</label>
+        <select id="f-handle"></select></div>
+      <div><label>바닥 보강판 (底板)</label>
+        <select id="f-bottom"><option value="需要">필요</option><option value="不需要" selected>불필요</option></select></div>
+      <div><label>희망 납기</label><input type="text" id="f-due" placeholder="예: 2026-11-15"/></div>
+      <div><label>배송지</label><input type="text" id="f-ship" value="韩国 首尔 (运至中国国内仓库亦可)"/></div>
+    </div>
+  </section>
+
+  <!-- 4. 요청서 -->
+  <section>
+    <h2>④ 공급사 제작 요청서</h2>
+    <div class="desc">위 선택값으로 자동 작성됩니다. 1688 / 타오바오 / 위챗 상담창에 그대로 붙여 넣고 로고 AI·PDF 파일을 함께 보내세요.</div>
+    <div class="row" style="margin:0 0 8px">
+      <button class="btn ghost" id="tab-cn" onclick="setLang('cn')">中文 (공급사용)</button>
+      <button class="btn ghost" id="tab-kr" onclick="setLang('kr')">한국어 (내부 공유용)</button>
+    </div>
+    <textarea id="out" readonly></textarea>
+    <div class="row"><button class="btn" onclick="copyOut()">📋 복사하기</button></div>
+  </section>
+
+  <section>
+    <h2>체크리스트</h2>
+    <ul class="notes">
+      <li>로고 원본은 <b>벡터(AI/PDF/SVG)</b>로 보내야 합니다. PNG만 있으면 공급사가 재작업비를 청구할 수 있어요.</li>
+      <li><b>满版(만판)</b> 표시 사이즈는 전면 인쇄도 가능한 사이즈입니다. 로고만 인쇄할 경우엔 관계없습니다.</li>
+      <li>첫 발주는 <b>打样(샘플)</b> 확인 후 본생산을 진행하세요. 샘플비·판비(版费)는 따로 받는 경우가 많습니다.</li>
+      <li>최소 주문 수량(MOQ)이 보통 사이즈별 500~1,000장입니다. 견적을 받을 때 꼭 확인하세요.</li>
+      <li>견적이 오면 OPS의 <b>📦 발주관리</b>에 등록하고, 장당 단가는 <b>포장비</b> 원가에 반영하세요.</li>
+    </ul>
+  </section>
+</div>
+<div class="toast" id="toast">복사됐어요</div>
+
+<script>
+const DESIGNS = [
+  {id:'A', name:'A · 클리어 + 핑크 로고', cn:'全透明PVC + 粉色LOGO (Pantone 213C)', kr:'완전 투명 PVC + 핑크 로고 (Pantone 213C)',
+   desc:'브랜드 컬러(#E91E63)를 그대로 살린 기본안. 제품이 가장 잘 보입니다.', body:'rgba(255,255,255,.35)', logo:'#E91E63', handle:'#E91E63', handleCn:'粉色PP绳', handleKr:'핑크 PP 로프'},
+  {id:'B', name:'B · 반투명(磨砂) + 화이트 로고', cn:'磨砂半透明PVC + 白色LOGO', kr:'반투명(무광 磨砂) PVC + 화이트 로고',
+   desc:'은은하고 고급스러운 무드. 내용물이 살짝 비치며 지문이 덜 보입니다.', body:'rgba(196,202,212,.92)', logo:'#ffffff', handle:'#ffffff', handleCn:'白色PP绳', handleKr:'화이트 PP 로프', stroke:'#cbd5e1'},
+  {id:'C', name:'C · 클리어 + 블랙 로고', cn:'全透明PVC + 黑色LOGO', kr:'완전 투명 PVC + 블랙 로고',
+   desc:'미니멀한 라이프스타일 톤. 어떤 상품 색과도 무난하게 어울립니다.', body:'rgba(255,255,255,.35)', logo:'#111111', handle:'#111111', handleCn:'黑色PP绳', handleKr:'블랙 PP 로프'},
+];
+
+// 공급사 고정 사이즈 (이미지 기준) + HLDYS 용도 매핑
+const SIZES = [
+  {no:1, w:32,d:11,h:25, full:true,  use:'의류·소형 패브릭 / Textile·Bags', rec:'M'},
+  {no:2, w:35,d:13,h:26, full:true,  use:'의류(아우터) / Textile'},
+  {no:3, w:43,d:14,h:32, full:false, use:'담요·대형 패브릭 / Textile', rec:'L'},
+  {no:4, w:17,d:8, h:21, full:false, use:'립·소형 케어 / Care'},
+  {no:5, w:22,d:10,h:20, full:true,  use:'안경·액세서리·오브제 소품 / Accessories·Objects·Care', rec:'S'},
+  {no:6, w:20,d:10,h:28, full:true,  use:'바디워시·디퓨저 등 보틀 / Bath'},
+  {no:7, w:25,d:10,h:20, full:true,  use:'세트 구성 소품 / Objects·Bath'},
+  {no:8, w:36,d:8, h:26, full:false, use:'서적·A4 문서 / Objects (Phaidon 등)'},
+  {no:9, w:26,d:8, h:36, full:false, use:'세로형 서적·포스터 / Objects'},
+  {no:10,w:30,d:10,h:40, full:false, use:'대형 서적·액자 / Objects'},
+];
+const DEFAULT_QTY = {S:1000, M:1000, L:500};
+
+let state = {design:'A', lang:'cn', qty:{}};
+SIZES.forEach(s => state.qty[s.no] = s.rec ? DEFAULT_QTY[s.rec] : 0);
+
+function bagSVG(d, w=150, h=170){
+  const stroke = d.stroke || '#94a3b8';
+  return `<svg width="${w}" height="${h}" viewBox="0 0 150 170" aria-label="${d.name}">
+    <path d="M52 52 C52 8, 98 8, 98 52" fill="none" stroke="${d.handle}" stroke-width="3.5" stroke-linecap="round"/>
+    <rect x="18" y="50" width="114" height="112" rx="3" fill="${d.body}" stroke="${stroke}" stroke-width="1.5"/>
+    <rect x="18" y="50" width="114" height="10" fill="rgba(148,163,184,.25)"/>
+    <circle cx="52" cy="56" r="2.6" fill="${stroke}"/><circle cx="98" cy="56" r="2.6" fill="${stroke}"/>
+    <path d="M24 150 L126 150" stroke="${stroke}" stroke-width=".8" stroke-dasharray="3 3"/>
+    <text x="75" y="112" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="800" letter-spacing="5" fill="${d.logo}" ${d.logo==='#ffffff'?'stroke="#cbd5e1" stroke-width=".4"':''}>HLDYS</text>
+    <text x="75" y="128" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="6.5" letter-spacing="2.5" fill="${d.logo}" ${d.logo==='#ffffff'?'stroke="#cbd5e1" stroke-width=".2"':''}>LIFESTYLE · SEOUL</text>
+  </svg>`;
+}
+
+function renderDesigns(){
+  document.getElementById('designs').innerHTML = DESIGNS.map(d => `
+    <div class="card opt ${state.design===d.id?'on':''}" onclick="pickDesign('${d.id}')">
+      <div class="mock">${bagSVG(d)}</div>
+      <h3>${d.name} ${state.design===d.id?'<span class="tag">선택됨</span>':''}</h3>
+      <p>${d.desc}</p>
+    </div>`).join('');
+}
+function pickDesign(id){
+  state.design = id;
+  const d = DESIGNS.find(x => x.id===id);
+  const sel = document.getElementById('f-handle');
+  sel.innerHTML = DESIGNS.map(x => `<option value="${x.handleCn}" ${x.id===id?'selected':''}>${x.handleKr}</option>`).join('');
+  renderDesigns(); renderOut();
+}
+
+function renderSizes(){
+  document.getElementById('sizes').innerHTML = SIZES.map(s => `
+    <tr>
+      <td><b>${s.no}号</b>${s.full?' <span class="tag" title="满版: 전면 인쇄 가능">满版</span>':''}</td>
+      <td class="num">${s.w}×${s.d}×${s.h}cm</td>
+      <td style="font-size:12px;color:var(--muted)">${s.use}</td>
+      <td>${s.rec?`<span class="tag">${s.rec}</span>`:''}</td>
+      <td><input type="number" min="0" step="100" value="${state.qty[s.no]}" oninput="setQty(${s.no},this.value)"/></td>
+    </tr>`).join('');
+  renderTotal();
+}
+function setQty(no, v){ state.qty[no] = Math.max(0, parseInt(v)||0); renderTotal(); renderOut(); }
+function renderTotal(){
+  const picked = SIZES.filter(s => state.qty[s.no] > 0);
+  const sum = picked.reduce((a,s) => a + state.qty[s.no], 0);
+  document.getElementById('total').textContent = `선택 ${picked.length}종 · 총 ${sum.toLocaleString()}장`;
+}
+
+function val(id){ return document.getElementById(id).value.trim(); }
+function renderOut(){
+  const d = DESIGNS.find(x => x.id===state.design);
+  const picked = SIZES.filter(s => state.qty[s.no] > 0);
+  const handleOpt = document.getElementById('f-handle').selectedOptions[0];
+  const due = val('f-due'), ship = val('f-ship');
+  const thick = val('f-thick'), side = val('f-side'), bottom = val('f-bottom');
+  let t;
+  if(state.lang==='cn'){
+    t = `您好！我们是韩国生活方式品牌 HLDYS，想定制一批透明PVC手提袋，麻烦帮忙报价，谢谢！
+
+【款式】${d.cn}
+【材质】PVC ${thick}
+【印刷】LOGO「HLDYS」单色丝印，${side}印刷（LOGO矢量文件另发）
+【手提绳】${handleOpt ? handleOpt.value : d.handleCn}
+【底板】${bottom}
+
+【尺寸及数量】（使用贵司固定尺寸）
+${picked.map(s => `· ${s.no}号  ${s.w}×${s.d}×${s.h}cm  ——  ${state.qty[s.no].toLocaleString()}个`).join('\n') || '· （待定）'}
+
+【交期】${due || '请告知打样及大货所需时间'}
+【收货地址】${ship}
+
+想确认以下几点：
+1. 每个尺寸的单价（含印刷）及阶梯价格
+2. 起订量（MOQ）
+3. 版费 / 打样费用及打样时间
+4. 大货生产周期
+5. 运费（到韩国或国内仓库）
+
+先打样确认后再下大货订单。谢谢！`;
+  } else {
+    t = `[HLDYS 쇼핑백 제작 요청 요약]
+
+· 디자인: ${d.name.replace(/^. · /,'')} — ${d.kr}
+· 소재: PVC ${thick}
+· 인쇄: HLDYS 로고 1도 실크인쇄, ${side==='双面'?'양면':'단면'}
+· 손잡이: ${handleOpt ? handleOpt.text : d.handleKr}
+· 바닥 보강판: ${bottom==='需要'?'필요':'불필요'}
+
+· 사이즈/수량 (공급사 고정 사이즈)
+${picked.map(s => `  - ${s.no}号 ${s.w}×${s.d}×${s.h}cm : ${state.qty[s.no].toLocaleString()}장  (${s.use})`).join('\n') || '  - (미정)'}
+  합계 ${picked.reduce((a,s)=>a+state.qty[s.no],0).toLocaleString()}장
+
+· 희망 납기: ${due || '미정 (샘플/본생산 소요기간 문의)'}
+· 배송지: ${ship}
+
+· 공급사 확인 요청: 사이즈별 단가·구간 단가 / MOQ / 판비·샘플비·샘플 기간 / 본생산 기간 / 배송비
+· 진행 순서: 견적 → 로고 벡터 파일 전달 → 샘플(打样) 확인 → 본생산 → OPS 발주관리 등록`;
+  }
+  document.getElementById('out').value = t;
+}
+function setLang(l){
+  state.lang = l;
+  document.getElementById('tab-cn').style.background = l==='cn' ? 'var(--pink-l)' : 'transparent';
+  document.getElementById('tab-kr').style.background = l==='kr' ? 'var(--pink-l)' : 'transparent';
+  renderOut();
+}
+function copyOut(){
+  const ta = document.getElementById('out');
+  const done = () => { const t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1400); };
+  if(navigator.clipboard) navigator.clipboard.writeText(ta.value).then(done, () => { ta.select(); document.execCommand('copy'); done(); });
+  else { ta.select(); document.execCommand('copy'); done(); }
+}
+
+['f-thick','f-side','f-handle','f-bottom','f-due','f-ship'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderOut);
+  document.getElementById(id).addEventListener('change', renderOut);
+});
+pickDesign('A'); renderSizes(); setLang('cn');
+</script>
+</body>
+</html>
